@@ -53,10 +53,10 @@ body{
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 100vw; /* Change width to 100vw to span the full viewport width */
     z-index: 1;
     transition: left 0.5s ease;
-    overflow: hidden; /* замените overflow: auto; на overflow: hidden; */
+    overflow: hidden; /* Change overflow to hidden */
 }
 #wrapper {
     overflow: auto; /* добавьте overflow: auto; для контейнера #wrapper */
@@ -149,12 +149,10 @@ body{
 }
 
 @media screen and (min-width: 768px) {
-    .toggle-button{
-        display: none;
-    }
     #header {
-        position: relative;
-        z-index:0;
+        width: 100%; /* Set width to 100% for larger screens */
+        position: fixed;
+        z-index: 1;
     }
 }
 
