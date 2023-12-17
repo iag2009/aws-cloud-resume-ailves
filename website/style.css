@@ -100,7 +100,7 @@ body{
     position: relative;
 }
 
-.site-banner .banner-area .author{
+.site-banner .banner-area .author {
     margin: 0;
     position: absolute;
     top: 45%;
@@ -168,7 +168,6 @@ body{
         left: 0;
         width: 100%;
         height: 100%;
-        /* background-color: #800080; */
         background-color: var(--color-blue); /* Цвет фона */
         flex-direction: column;
         align-items: center;
@@ -182,9 +181,8 @@ body{
 
     .primary-nav a {
         /* margin: 10px; */
-        text-align: center;
-        padding: 10px;
         color: #fff;
+        margin: 10px;
         text-decoration: none;
         font-size: 16px;
         text-transform: uppercase;
@@ -192,10 +190,9 @@ body{
 
     /* Добавленные стили для сайт-баннера на мобильных устройствах */
     .site-banner .banner-area .author {
-        /* text-align: center; */
-        position: absolute;
-        top: 45%;
-        left: 20%;
+        text-align: center;
+        top: 30%;
+        left: 50%;
         transform: translate(-50%, -50%);
     }
 
