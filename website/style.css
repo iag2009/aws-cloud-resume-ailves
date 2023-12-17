@@ -111,18 +111,21 @@ body{
 .site-banner .banner-area .author .author-img{
     width: 240px;
     height: 240px;
-    border-radius: 50%;
-    margin: auto;
     background: url(./assets/avatar-alt.png) no-repeat;
     background-size: 110%;
     background-position: 40% 0;
 }
 
+.primary-nav .site-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
 .primary-nav .site-title .author-photo{
     width: 240px;
     height: 240px;
-    border-radius: 50%;
-    margin: auto;
     background: url(./assets/Alexander_Ilves_Photo-removebg.png) no-repeat;
     background-size: 110%;
     background-position: 40% 0;
@@ -149,6 +152,64 @@ body{
         z-index:0;
     }
 }
+
+/* Chat GPT added */
+@media only screen and (max-width: 767px) {
+    /* Скрываем кнопку Toggle при больших экранах */
+    .toggle-button {
+        display: block;
+    }
+
+    /* Стили для навигации на мобильных устройствах */
+    .primary-nav {
+        display: flex;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        /* background-color: #800080; */
+        background-color: var(--color-blue); /* Цвет фона */
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 2; /* Поверх всего остального, кроме header */
+    }
+
+    .primary-nav.show {
+        display: flex;
+    }
+
+    .primary-nav a {
+        /* margin: 10px; */
+        text-align: center;
+        padding: 10px;
+        color: #fff;
+        text-decoration: none;
+        font-size: 16px;
+        text-transform: uppercase;
+    }
+
+    /* Добавленные стили для сайт-баннера на мобильных устройствах */
+    .site-banner .banner-area .author {
+        /* text-align: center; */
+        position: absolute;
+        top: 45%;
+        left: 20%;
+        transform: translate(-50%, -50%);
+    }
+
+    .site-banner .banner-area .author .author-img,
+    .primary-nav .site-title .author-photo {
+        width: 120px;
+        height: 120px;
+        background-size: cover;
+        background-position: center;
+        border-radius: 50%;
+        margin: 0 auto 10px;
+    }
+}
+/* End Chat GPT added */
 
 #typed{
     color: var(--color-blue);
