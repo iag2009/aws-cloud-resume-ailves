@@ -72,7 +72,7 @@ const globalCounter = document.querySelector(".counter-number");
 const localCounter = document.getElementById("counterValue");
 
 async function updateGlobalCounter() {
-    let response = await fetch("https://4zvkoukdrjhj4x5aeoiahmyxxe0jqgsv.lambda-url.us-east-1.on.aws/");
+    let response = await fetch("https://111oukdrjhj4x5aeoiahmyxxe0jqgsv.lambda-url.us-east-1.on.aws/");
     let data = await response.json();
     globalCounter.innerHTML = `👀 Views: ${data}`;
 }
