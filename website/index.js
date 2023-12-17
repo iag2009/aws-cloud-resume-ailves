@@ -56,7 +56,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         });
     });
 });
-
+/*
 const counter = document.querySelector(".counter-number");
 async function updateCounter() {
     let response = await fetch(
@@ -66,8 +66,29 @@ async function updateCounter() {
     counter.innerHTML = `👀 Views: ${data}`;
 }
 updateCounter();
+*/
+// New Counter
+const globalCounter = document.querySelector(".counter-number");
+const localCounter = document.getElementById("counterValue");
 
-// Добавьте этот код в вашем JavaScript-файле (index.js или другом)
+async function updateGlobalCounter() {
+    let response = await fetch("https://4zvkoukdrjhj4x5aeoiahmyxxe0jqgsv.lambda-url.us-east-1.on.aws/");
+    let data = await response.json();
+    globalCounter.innerHTML = `👀 Views: ${data}`;
+}
+
+async function updateLocalCounter() {
+    let response = await fetch("https://your-new-counter-endpoint"); // Replace with your new counter endpoint
+    let data = await response.json();
+    localCounter.innerHTML = `Local Views: ${data}`;
+}
+
+// Call the update functions
+updateGlobalCounter();
+updateLocalCounter();
+
+// End New Counter
+
 var mySwiper = new Swiper('.swiper-container', {
     // параметры
     direction: 'vertical', // прокручивание вертикально
