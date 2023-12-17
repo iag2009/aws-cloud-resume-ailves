@@ -157,10 +157,10 @@ body{
 
 /* Chat GPT added */
 @media only screen and (max-width: 767px) {
-    /* Скрываем кнопку Toggle при больших экранах */
+    /* Скрываем кнопку Toggle при больших экранах
     .toggle-button {
         display: block;
-    }
+    } */
 
     /* Стили для навигации на мобильных устройствах */
     .primary-nav {
