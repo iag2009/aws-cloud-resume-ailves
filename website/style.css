@@ -56,7 +56,10 @@ body{
     width: 100%;
     z-index: 1;
     transition: left 0.5s ease;
-    overflow: auto;
+    overflow: hidden; /* замените overflow: auto; на overflow: hidden; */
+}
+#wrapper {
+    overflow: auto; /* добавьте overflow: auto; для контейнера #wrapper */
 }
 
 #header nav{
@@ -206,6 +209,18 @@ body{
         background-position: center;
         border-radius: 50%;
         margin: 0 auto 10px;
+    }
+    #wrapper {
+        position: relative;
+        left: 0;
+    }
+    .toggle-left {
+        left: 0 !important;
+        width: 1000px !important;
+    }
+
+    #header {
+        z-index: 0;
     }
 }
 /* End Chat GPT added */
