@@ -220,6 +220,7 @@ body{
     }
 
     #header {
+        position: relative;
         z-index: 0;
     }
 }
