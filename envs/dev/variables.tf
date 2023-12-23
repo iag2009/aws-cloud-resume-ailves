@@ -30,38 +30,5 @@ variable "gitlab_project" {
   description = "Name of Project in Gitlab"
   type        = string
 }
-/* end global vars */
-variable "vpc_cidr" {
-  description = "VPC CIDR block"
-  type        = string
-}
-variable "public_subnets" {
-  type        = list(string)
-  description = "Available cidr blocks for public subnets."
-}
-variable "private_subnets" {
-  type        = list(string)
-  description = "Available cidr blocks for private subnets."
-}
 /* end inputs.tfvars */
 
-variable "aws_ami" {
-  description = "Depends on location"
-  type        = string
-  default     = "ami-01e7ca2ef94a0ae86"
-}
-variable "instance_name" {
-  description = "Value of the Name tag for the EC2 instance"
-  type        = string
-  default     = "ailves_instance"
-}
-variable "sqs" {
-  type = object({
-    name   = string
-    enable = bool
-  })
-  default = ({
-    name   = "sqs_service"
-    enable = true
-  })
-}

@@ -1,3 +1,41 @@
+/* 
+variable "vpc_cidr" {
+  description = "VPC CIDR block"
+  type        = string
+  default = "172.31.0.0/16"
+}
+variable "public_subnets" {
+  type        = list(string)
+  description = "Available cidr blocks for public subnets."
+  default = ["10.10.10.0/24", "10.10.11.0/24"]
+}
+variable "private_subnets" {
+  type        = list(string)
+  description = "Available cidr blocks for private subnets."
+  default = ["172.31.128.0/20", "172.31.144.0/20", "172.31.160.0/20"]
+}
+variable "aws_ami" {
+  description = "Depends on location"
+  type        = string
+  default     = "ami-01e7ca2ef94a0ae86"
+}
+variable "instance_name" {
+  description = "Value of the Name tag for the EC2 instance"
+  type        = string
+  default     = "ailves_instance"
+}
+variable "sqs" {
+  type = object({
+    name   = string
+    enable = bool
+  })
+  default = ({
+    name   = "sqs_service"
+    enable = true
+  })
+}
+
+
 resource "aws_instance" "sqs" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
@@ -62,3 +100,4 @@ data "aws_vpc" "selected" {
 data "aws_subnet" "selected" {
   cidr_block = var.private_subnets[0]
 }
+*/
