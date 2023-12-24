@@ -129,4 +129,29 @@ resource "aws_cloudfront_distribution" "this" {
     Name = "${var.solution}-${var.project}-${var.environment}"
   }
 }
+/** Create a route53 record for CV page on cloudfront distribution **/
+
+resource "aws_route53_record" "cv" {
+  zone_id = data.aws_route53_zone.this.zone_id
+  name    = "cv.${var.domain_name}"
+  type    = "A"
+  alias {
+    name                   = aws_cloudfront_distribution.this.domain_name
+    zone_id                = aws_cloudfront_distribution.this.hosted_zone_id
+    evaluate_target_health = false
+  }
+}
+
+/** Create a route53 record for root page on cloudfront distribution **/
+resource "aws_route53_record" "root" {
+  zone_id = data.aws_route53_zone.this.zone_id
+  name    = var.domain_name
+  type    = "A"
+  alias {
+    name                   = aws_cloudfront_distribution.this.domain_name
+    zone_id                = aws_cloudfront_distribution.this.hosted_zone_id
+    evaluate_target_health = false
+  }
+}
+
 
