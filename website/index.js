@@ -56,18 +56,17 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         });
     });
 });
-/*
+
 const counter = document.querySelector(".counter-number");
 async function updateCounter() {
-    let response = await fetch(
-        "https://4zvkoukdrjhj4x5aeoiahmyxxe0jqgsv.lambda-url.us-east-1.on.aws/"
-    );
+    let response = await fetch("https://hrq2m63cqjmza2ppjxnongxsqy0ddosm.lambda-url.us-east-2.on.aws/");
     let data = await response.json();
     counter.innerHTML = `👀 Views: ${data}`;
 }
 updateCounter();
-*/
-// New Counter
+
+// New Counter from GPT
+/*
 const globalCounter = document.querySelector(".counter-number");
 const localCounter = document.getElementById("counterValue");
 
@@ -86,8 +85,8 @@ async function updateLocalCounter() {
 // Call the update functions
 updateGlobalCounter();
 updateLocalCounter();
-
-// End New Counter
+*/
+// End New Counter from GPT
 
 var mySwiper = new Swiper('.swiper-container', {
     // параметры
