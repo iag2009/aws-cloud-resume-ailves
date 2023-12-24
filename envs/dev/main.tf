@@ -180,7 +180,7 @@ resource "aws_dynamodb_table" "this" {
   }
   ttl {
     attribute_name = "TimeToExist"
-    enabled        = false
+    enabled        = true
   }
   tags = {
     Name        = "dynamodb-pagecounter"
