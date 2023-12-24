@@ -1,6 +1,6 @@
 # AWS Cloud Resume Challenge
 
-This is my attempt at a cloud resume challenge project. The project was published by Forrest Brazeal and it's a multiple-step resume project [The Cloud Resume Challenge](https://cloudresumechallenge.dev/) which helps build and demonstrate fundamental skills to pursuing a career in Cloud. I came across Rishab Kumar's implementation on the Internet and made my own implementation based on Forrest and Rishab.
+This is my attempt at a cloud resume challenge project. The project was published by Forrest Brazeal, and it's a multiple-step resume project which helps build and demonstrate fundamental skills to pursuing a career in Cloud. I came across Rishab Kumar's implementation on the Internet and made my own implementation based on Forrest and Rishab.
 
 ## Architecture
 
