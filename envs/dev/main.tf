@@ -154,4 +154,35 @@ resource "aws_route53_record" "root" {
   }
 }
 
+/*** Create DynamoDB Table for counter on page ***/
+resource "aws_dynamodb_table" "this" {
+  name           = "${var.project}_pagecounter"
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 20
+  write_capacity = 20
+  hash_key       = "id"
+  // range_key      = "GameTitle"
 
+  attribute {
+    name = "id"
+    type = "S"
+  }
+    attribute {
+    name = "views"
+    type = "N"
+  }
+    global_secondary_index {
+    name               = "ViewsIndex"
+    hash_key           = "views"
+    write_capacity     = 10
+    read_capacity      = 10
+    projection_type    = "ALL"
+  }
+  ttl {
+    attribute_name = "TimeToExist"
+    enabled        = false
+  }
+  tags = {
+    Name        = "dynamodb-pagecounter"
+  }
+}
