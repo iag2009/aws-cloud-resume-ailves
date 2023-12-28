@@ -45,8 +45,8 @@ resource "aws_cloudfront_origin_access_control" "this" {
 
 /** Second - Create a wildcard certificate for domain names - aliases **/
 resource "aws_acm_certificate" "wildcard" {
-  domain_name       = "*.ailves2009.com"
-  subject_alternative_names = ["cv.ailves2009.com", "ailves2009.com"]
+  domain_name       = "*.${var.domain_name}"
+  subject_alternative_names = ["cv.${var.domain_name}", "${var.domain_name}"]
   validation_method = "DNS"
   provider          = aws.us-east-1
   tags = {
