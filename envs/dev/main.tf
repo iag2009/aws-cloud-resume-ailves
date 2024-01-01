@@ -45,10 +45,10 @@ resource "aws_cloudfront_origin_access_control" "this" {
 
 /** Second - Create a wildcard certificate for domain names - aliases **/
 resource "aws_acm_certificate" "wildcard" {
-  domain_name       = "*.${var.domain_name}"
+  domain_name               = "*.${var.domain_name}"
   subject_alternative_names = ["cv.${var.domain_name}", "${var.domain_name}"]
-  validation_method = "DNS"
-  provider          = aws.us-east-1
+  validation_method         = "DNS"
+  provider                  = aws.us-east-1
   tags = {
     Name = "Wildcard Certificate DNS zone"
   }
@@ -57,7 +57,7 @@ resource "aws_acm_certificate" "wildcard" {
   }
 }
 data "aws_route53_zone" "this" {
-  name         = var.domain_name
+  name         = aws_ssm_parameter.domain_name.value
   private_zone = false
 }
 resource "aws_route53_record" "wildcard" {
@@ -76,11 +76,11 @@ resource "aws_route53_record" "wildcard" {
   zone_id         = data.aws_route53_zone.this.zone_id
 }
 resource "aws_acm_certificate_validation" "this" {
-  provider          = aws.us-east-1
+  provider                = aws.us-east-1
   count                   = length(aws_acm_certificate.wildcard.*.arn) > 0 ? 1 : 0
   certificate_arn         = aws_acm_certificate.wildcard.arn
   validation_record_fqdns = [for record in aws_route53_record.wildcard : record.fqdn]
-  depends_on = [aws_acm_certificate.wildcard]
+  depends_on              = [aws_acm_certificate.wildcard]
 }
 
 /** Create a cloudfront distribution **/
@@ -167,22 +167,22 @@ resource "aws_dynamodb_table" "this" {
     name = "id"
     type = "S"
   }
-    attribute {
+  attribute {
     name = "views"
     type = "N"
   }
-    global_secondary_index {
-    name               = "ViewsIndex"
-    hash_key           = "views"
-    write_capacity     = 10
-    read_capacity      = 10
-    projection_type    = "ALL"
+  global_secondary_index {
+    name            = "ViewsIndex"
+    hash_key        = "views"
+    write_capacity  = 10
+    read_capacity   = 10
+    projection_type = "ALL"
   }
   ttl {
     attribute_name = "TimeToExist"
     enabled        = true
   }
   tags = {
-    Name        = "dynamodb-pagecounter"
+    Name = "dynamodb-pagecounter"
   }
 }

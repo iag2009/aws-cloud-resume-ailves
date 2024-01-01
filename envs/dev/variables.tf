@@ -30,7 +30,7 @@ variable "gitlab_project" {
   description = "Name of Project in Gitlab"
   type        = string
 }
-variable "domain_name" { 
+variable "domain_name" {
   description = "DNS Domain name"
   type        = string
 }

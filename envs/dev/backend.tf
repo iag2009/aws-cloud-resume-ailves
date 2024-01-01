@@ -20,7 +20,7 @@ provider "aws" {
   # second provider for ACM certificates, which must be in us-east-1
   alias  = "us-east-1"
   region = "us-east-1"
-  default_tags {  
+  default_tags {
     tags = {
       ENV            = var.environment
       Solution       = var.solution
