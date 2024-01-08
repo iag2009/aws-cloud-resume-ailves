@@ -3,10 +3,19 @@ variable "aws_account" {
   description = "aws_account"
   type        = string
 }
-variable "region" {
+variable "aws_region" {
   description = "aws region"
   type        = string
   default     = "us-east-2"
+}
+variable "replication_aws_region" {
+  description = "aws region"
+  type        = string
+  default     = "us-east-1"
+}
+variable "regions" {
+  type    = list(string)
+  default = ["us-east-1", "us-east-1"]
 }
 variable "solution" {
   description = "Name of Top level solution"
@@ -35,4 +44,9 @@ variable "domain_name" {
   type        = string
 }
 /* end inputs.tfvars */
+variable "s3_force_destroy" {
+  type        = bool
+  description = "a passthrough variable to the created s3 buckets to allow the terraform destroy to succeed in the event that objects are present"
+  default     = true
+}
 

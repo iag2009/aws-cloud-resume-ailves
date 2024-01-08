@@ -39,7 +39,7 @@ variable "sqs" {
 resource "aws_instance" "sqs" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
-  # key_name               = "ailves_da_aws_${var.region}"
+  # key_name               = "ailves_da_aws_${var.aws_region}"
   vpc_security_group_ids = [aws_security_group.sqs[count.index].id]
   subnet_id              = data.aws_subnet.selected.id
   count                  = var.sqs.enable ? 1 : 0
@@ -66,7 +66,7 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_security_group" "sqs" {
-  name        = "sqs-ec2-${var.region}"
+  name        = "sqs-ec2-${var.aws_region}"
   description = "sqs-ec2-Sec-Group"
   count       = var.sqs.enable ? 1 : 0
   vpc_id      = data.aws_vpc.selected.id
