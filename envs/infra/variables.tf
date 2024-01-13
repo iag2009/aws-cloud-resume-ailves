@@ -44,20 +44,42 @@ variable "domain_name" {
   type        = string
 }
 /* vars for ECR */
-variable "repository_read_access_arns" {
+variable "ecr_repository_read_access_arns" {
   description = "The ARNs of the IAM users/roles that have read access to the repository"
   type        = list(string)
   default     = ["arn:aws:iam::121850521501:user/bob"]
 }
 
-variable "repository_lambda_read_access_arns" {
+variable "ecr_repository_lambda_read_access_arns" {
   description = "The ARNs of the Lambda service roles that have read access to the repository"
   type        = list(string)
   default     = []
 }
 
-variable "repository_read_write_access_arns" {
+variable "ecr_repository_read_write_access_arns" {
   description = "The ARNs of the IAM users/roles that have read/write access to the repository"
   type        = list(string)
   default     = ["arn:aws:iam::121850521501:user/github-actions"]
+}
+
+variable "ecr_create" {
+  description = "Determines whether resources will be created (affects all resources)"
+  type        = bool
+  default     = true
+}
+
+variable "ecr_repository_type" {
+  description = "The type of repository to create. Either `public` or `private`"
+  type        = string
+  default     = "private"
+}
+variable "ecr_create_repository" {
+  description = "Determines whether a repository will be created"
+  type        = bool
+  default     = true
+}
+variable "ecr_create_registry_policy" {
+  description = "Determines whether a registry policy will be created"
+  type        = bool
+  default     = false
 }
