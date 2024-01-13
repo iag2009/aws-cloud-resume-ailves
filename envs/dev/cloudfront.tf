@@ -1,10 +1,10 @@
 resource "aws_s3_bucket" "this" {
-  bucket = "${var.solution}-${var.project}-${var.environment}"
+  bucket = "${var.project_long}-${var.environment}"
   lifecycle {
     prevent_destroy = false
   }
   tags = {
-    Name = "${var.solution}-${var.project}-${var.environment}"
+    Name = "${var.project_long}-${var.environment}"
   }
 }
 resource "aws_s3_bucket_policy" "this" {
@@ -126,7 +126,7 @@ resource "aws_cloudfront_distribution" "this" {
     minimum_protocol_version = "TLSv1.1_2016"
   }
   tags = {
-    Name = "${var.solution}-${var.project}-${var.environment}"
+    Name = "${var.project_long}-${var.environment}"
   }
 }
 /** Create a route53 record for CV page on cloudfront distribution **/

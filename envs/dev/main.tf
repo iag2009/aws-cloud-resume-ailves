@@ -10,7 +10,7 @@ module "s3" {
   //s3_policy_service       = "cloudfront.amazonaws.com"
   //s3_policy_condition_arn = "cloudfront::${var.aws_account}:distribution/${aws_cloudfront_distribution.this.id}"
   tags = {
-    Name = "${var.solution}-${var.project}-${var.environment}"
+    Name = "${var.project_long}-${var.environment}"
   }
   # Logging 
   // logs_prefix = "${var.logs_prefix}"
