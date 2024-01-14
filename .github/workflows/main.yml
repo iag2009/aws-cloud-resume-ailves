@@ -8,7 +8,7 @@
 #---------------------------------------------------------------------
     name: CI-CD-Pipeline-to-AWS-S3
     env:
-      EB_PACKAGE_S3_BUCKET_NAME : "ailves-cloud-resume-ailves-dev"
+      EB_PACKAGE_S3_BUCKET_NAME : "ailves-cloud-resume-ailves-dev-source"
       EB_APPLICATION_NAME       : "ailves-common-infra"
       EB_ENVIRONMENT_NAME       : "ailves-common-infra-env"
       DEPLOY_PACKAGE_NAME       : "aws-cloud-resume-ailves_${{ github.sha }}.zip"
