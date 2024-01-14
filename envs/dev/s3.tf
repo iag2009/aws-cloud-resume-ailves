@@ -23,12 +23,10 @@ provider "aws" {
 */
 locals {
   bucket_name             = "${var.project_long}-${var.environment}-source"
-  destination_bucket_name = "${var.project_long}-${var.environment}-destination"
+  destination_bucket_name = "${var.project_long}-${var.environment}-replic"
   #origin_region           = var.aws_region
   #replica_region          = var.aws_region_repl
 }
-
-data "aws_caller_identity" "current" {}
 
 resource "aws_kms_key" "replica" {
   provider = aws.replica
@@ -40,7 +38,7 @@ resource "aws_kms_key" "replica" {
 module "replica_bucket" {
   #source = "../../../../terraform_aws_modules/terraform-aws-s3-bucket"
 
-  source = "../../modules/s3"
+  source = "../modules/s3"
   providers = {
     aws = aws.replica
   }
@@ -80,7 +78,7 @@ POLICY
 module "s3_bucket" {
   # source = "../../../../terraform_aws_modules/terraform-aws-s3-bucket"
 
-  source = "../../modules/s3"
+  source = "../modules/s3"
   bucket = local.bucket_name
   acl    = "private"
   force_destroy = false
@@ -211,44 +209,3 @@ POLICY
     ]
   }
 }
-/*
-module "object" {
-  source = "../../modules/object"
-
-  bucket = module.s3_bucket.s3_bucket_id
-  key    = "key-local"
-
-  file_source = "one.md"
-  #  content = file("README.md")
-  #  content_base64 = filebase64("README.md")
-
-  tags = {
-    Sensitive = "not-really"
-  }
-}
-*/
-resource "aws_s3_object" "this" {
-  bucket        = module.s3_bucket.s3_bucket_id
-  key           = "key-local"
-  force_destroy = true
-
-  acl    = "bucket-owner-full-control"
-
-  source         = "one.md"
-  # etag           = var.etag
-}
-/*
-variable "source_dir" {
-  type = string
-  description = "The source directory to upload to S3"
-  default = "${dirname(dirname(dirname(path.module)))}/website"
-}
-*/
-#resource "aws_s3_object" "object" {
-#  for_each = { for f in fileset(var.source_dir, "**/*") : f => f }
-#  bucket = module.s3_bucket.s3_bucket_id
-#  key    = each.value
-#  source = "${var.source_dir}/${each.value}"
-#  acl    = "bucket-owner-full-control"
-#  etag   = filemd5("${var.source_dir}/${each.value}")
-#}

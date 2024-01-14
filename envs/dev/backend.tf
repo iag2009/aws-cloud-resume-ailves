@@ -36,6 +36,10 @@ provider "aws" {
   #skip_credentials_validation = true
   #skip_requesting_account_id  = true
 }
+provider "aws" {
+  alias  = "us-east-1"
+  region = "us-east-1"
+}
 
 provider "aws" {
   region = var.aws_region
@@ -59,5 +63,3 @@ provider "aws" {
   }
 }
 
-data "aws_caller_identity" "current" {}
-data "aws_partition" "current" {}
