@@ -6,69 +6,31 @@
 #
 # Made by Aleksandr Ilves Copyleft (c) 2024
 #---------------------------------------------------------------------
-    name: CI-CD-Pipeline-to-AWS-S3
+    name: Deploy to S3 and Invalidate CloudFront
     env:
-      EB_PACKAGE_S3_BUCKET_NAME : "aws-cloud-resume-ailves-dev-source"
-      EB_APPLICATION_NAME       : "ailves-common-infra"
-      EB_ENVIRONMENT_NAME       : "ailves-common-infra-env"
-      DEPLOY_PACKAGE_NAME       : "aws-cloud-resume-ailves_${{ github.sha }}.zip"
+      S3_BUCKET_NAME : "aws-cloud-resume-ailves-dev-destination"
       AWS_REGION_NAME           : "us-east-2"
     
-    on: 
+    on:
       push:
-        branches: 
-          - master
+        branches:
+        - main
     
     jobs:
-      my_ci_part:
+      deploy:
         runs-on: ubuntu-latest
     
         steps:
-        - name: Git clone our repo
-          uses: actions/checkout@v3
-           
-        - name: Create ZIP deployment package
-          run: |
-            cd website
-            zip -r ../${{ env.DEPLOY_PACKAGE_NAME }} * -x *.git*
-          
-        - name: Configure my AWS Credentials
-          uses: aws-actions/configure-aws-credentials@v3
+        - name: Checkout repository
+          uses: actions/checkout@v2
+    
+        - name: Deploy to S3
+          uses: jakejarvis/s3-sync-action@master
           with:
-            aws-access-key-id    :  ${{ secrets.AWS_ACCESS_KEY }}
-            aws-secret-access-key:  ${{ secrets.AWS_SECRET_KEY }}
-            aws-region           :  ${{ env.AWS_REGION_NAME }}
-            
-          
-        - name: Copy Deployment package to S3 bucket
-          run: aws s3 cp ${{ env.DEPLOY_PACKAGE_NAME }} s3://${{ env.EB_PACKAGE_S3_BUCKET_NAME }}/
-        
-        - name: Print Happy Message for CI finish
-          run : echo "CI Pipeline part Finished successfully!"
-    
-    
-      my_cd_part:
-        runs-on: ubuntu-latest
-        needs: [my_ci_part]
-    
-        steps:
-        - name: Configure my AWS Credentials
-          uses: aws-actions/configure-aws-credentials@v3
-          with:
-            aws-access-key-id    :  ${{ secrets.AWS_ACCESS_KEY }}
-            aws-secret-access-key:  ${{ secrets.AWS_SECRET_KEY }}
-            aws-region           :  ${{ env.AWS_REGION_NAME }}
-        
-        - name: Create new ElasticBeanstalk Application Version
-          run : |
-            aws elasticbeanstalk create-application-version \
-            --application-name ${{ env.EB_APPLICATION_NAME }} \
-            --source-bundle S3Bucket="${{ env.EB_PACKAGE_S3_BUCKET_NAME }}",S3Key="${{ env.DEPLOY_PACKAGE_NAME }}" \
-            --version-label "Ver-${{ github.sha }}" \
-            --description "CoimmitSHA-${{ github.sha }}"
-           
-        - name: Deploy new ElasticBeanstalk Application Version
-          run : aws elasticbeanstalk update-environment --environment-name ${{ env.EB_ENVIRONMENT_NAME }} --version-label "Ver-${{ github.sha }}"
-          
-        - name: Print Happy Message for CD finish
-          run : echo "CD Pipeline part Finished successfully!"
+            args: --acl public-read --follow-symlinks --delete
+          env:
+            AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            AWS_REGION: ${{ env.AWS_REGION_NAME}}  # optional: defaults to us-east-1
+            SOURCE_DIR: 'public'  # optional: defaults to entire repository
