@@ -9,7 +9,7 @@
     name: Deploy to S3 and Invalidate CloudFront
     env:
       S3_BUCKET_NAME : "aws-cloud-resume-ailves-dev-destination"
-      AWS_REGION_NAME           : "us-east-2"
+      AWS_REGION_NAME: "us-east-2"
     
     on:
       push:
@@ -29,8 +29,9 @@
           with:
             args: --acl public-read --follow-symlinks --delete
           env:
-            AWS_S3_BUCKET: ${{ env.AWS_S3_BUCKET }}
+            AWS_S3_BUCKET: ${{ env.S3_BUCKET_NAME }}
             AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
             AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
-            AWS_REGION: ${{ env.AWS_REGION_NAME}}  # optional: defaults to us-east-2
+            AWS_REGION: ${{ env.AWS_REGION_NAME }}  # optional: defaults to us-east-2
             SOURCE_DIR: 'public'  # optional: defaults to entire repository
+            
