@@ -14,7 +14,7 @@
     on:
       push:
         branches:
-        - main
+        - master
     
     jobs:
       deploy:
@@ -34,4 +34,3 @@
             AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
             AWS_REGION: ${{ env.AWS_REGION_NAME }}  # optional: defaults to us-east-2
             SOURCE_DIR: 'public'  # optional: defaults to entire repository
-            
