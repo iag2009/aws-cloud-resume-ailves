@@ -4,7 +4,7 @@ module "s3" {
   aws_account             = var.aws_account
   aws_region              = var.aws_region
   replication_aws_region  = var.replication_aws_region
-  bucket_name             = "${var.solution}-${var.project}-${var.environment}-source"
+  bucket_name             = "${var.project_long}-${var.environment}-source"
   //prevent_destroy         = false
   force_destroy           = true
   //s3_policy_service       = "cloudfront.amazonaws.com"

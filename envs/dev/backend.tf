@@ -18,8 +18,8 @@ terraform {
 
 provider "aws" {
   # second provider for ACM certificates, and ECR repositories, which must be in us-east-1
-  alias  = "us-east-1"
-  region = "us-east-1"
+  alias = "replica"
+  region = var.aws_region_repl
   default_tags {
     tags = {
       ENV            = var.environment
@@ -30,6 +30,11 @@ provider "aws" {
       workspace      = terraform.workspace
     }
   }
+  # Make it faster by skipping something
+  #skip_metadata_api_check     = true
+  #skip_region_validation      = true
+  #skip_credentials_validation = true
+  #skip_requesting_account_id  = true
 }
 
 provider "aws" {

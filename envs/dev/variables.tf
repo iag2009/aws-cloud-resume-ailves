@@ -8,7 +8,7 @@ variable "aws_region" {
   type        = string
   default     = "us-east-2"
 }
-variable "replication_aws_region" {
+variable "aws_region_repl" {
   description = "aws region"
   type        = string
   default     = "us-east-1"
