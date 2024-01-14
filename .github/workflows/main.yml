@@ -9,8 +9,8 @@
     name: CI-CD-Pipeline-to-AWS-S3
     env:
       EB_PACKAGE_S3_BUCKET_NAME : "aws-cloud-resume-ailves-dev-source"
-      EB_APPLICATION_NAME       : "aws-cloud-resume-ailves"
-      EB_ENVIRONMENT_NAME       : "aws-cloud-resume-ailves-env"
+      EB_APPLICATION_NAME       : "ailves-common-infra"
+      EB_ENVIRONMENT_NAME       : "ailves-common-infra-env"
       DEPLOY_PACKAGE_NAME       : "aws-cloud-resume-ailves_${{ github.sha }}.zip"
       AWS_REGION_NAME           : "us-east-2"
     
