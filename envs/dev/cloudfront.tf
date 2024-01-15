@@ -1,5 +1,11 @@
+/* Cloud Front Distribution, that only access s3 bucket */
+/** S3 bucket policy for CloudFront to getting content **/
 resource "aws_s3_bucket_policy" "this" {
   bucket = module.s3_bucket.s3_bucket_id
+
+  lifecycle {
+    prevent_destroy = false
+  }
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -20,11 +26,7 @@ resource "aws_s3_bucket_policy" "this" {
   ]
 }
 EOF
-  lifecycle {
-    prevent_destroy = false
-  }
 }
-/* Cloud Front Distribution, that only access s3 bucket */
 /** First create a origin access identity for CloudFront Destribution **/
 resource "aws_cloudfront_origin_access_control" "this" {
   name                              = "${var.project}_oai"
@@ -33,47 +35,18 @@ resource "aws_cloudfront_origin_access_control" "this" {
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
 }
-
-/** Second - Create a wildcard certificate for domain names - aliases **/
-resource "aws_acm_certificate" "wildcard" {
-  domain_name               = "*.${var.domain_name}"
-  subject_alternative_names = ["cv.${var.domain_name}", "${var.domain_name}"]
-  validation_method         = "DNS"
-  provider                  = aws.us-east-1
-  tags = {
-    Name = "Wildcard Certificate DNS zone"
-  }
-  lifecycle {
-    create_before_destroy = true
-  }
+/** Find a certificate issued by ACM **/
+data "aws_acm_certificate" "wildcard" {
+  domain      = "*.${var.domain_name}"
+  provider    = aws.us-east-1
+  types       = ["AMAZON_ISSUED"]
+  most_recent = true
 }
+/** Data of DNS zone to have ID **/
 data "aws_route53_zone" "this" {
-  name         = aws_ssm_parameter.domain_name.value // name of DNS zone take from SSM parameter
+  name         = var.domain_name
   private_zone = false
 }
-resource "aws_route53_record" "wildcard" {
-  for_each = {
-    for dvo in aws_acm_certificate.wildcard.domain_validation_options : dvo.domain_name => {
-      name   = dvo.resource_record_name
-      record = dvo.resource_record_value
-      type   = dvo.resource_record_type
-    }
-  }
-  allow_overwrite = true
-  name            = each.value.name
-  records         = [each.value.record]
-  ttl             = 60
-  type            = each.value.type
-  zone_id         = data.aws_route53_zone.this.zone_id
-}
-resource "aws_acm_certificate_validation" "this" {
-  provider                = aws.us-east-1
-  count                   = length(aws_acm_certificate.wildcard.*.arn) > 0 ? 1 : 0
-  certificate_arn         = aws_acm_certificate.wildcard.arn
-  validation_record_fqdns = [for record in aws_route53_record.wildcard : record.fqdn]
-  depends_on              = [aws_acm_certificate.wildcard]
-}
-
 /** Create a cloudfront distribution **/
 resource "aws_cloudfront_distribution" "this" {
   origin {
@@ -112,7 +85,7 @@ resource "aws_cloudfront_distribution" "this" {
   }
   viewer_certificate {
     // cloudfront_default_certificate = true
-    acm_certificate_arn      = aws_acm_certificate.wildcard.arn
+    acm_certificate_arn      = data.aws_acm_certificate.wildcard.arn
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.1_2016"
   }
@@ -121,7 +94,6 @@ resource "aws_cloudfront_distribution" "this" {
   }
 }
 /** Create a route53 record for CV page on cloudfront distribution **/
-
 resource "aws_route53_record" "cv" {
   zone_id = data.aws_route53_zone.this.zone_id
   name    = "cv.${var.domain_name}"
@@ -132,7 +104,6 @@ resource "aws_route53_record" "cv" {
     evaluate_target_health = false
   }
 }
-
 /** Create a route53 record for root page on cloudfront distribution **/
 resource "aws_route53_record" "root" {
   zone_id = data.aws_route53_zone.this.zone_id
@@ -144,7 +115,6 @@ resource "aws_route53_record" "root" {
     evaluate_target_health = false
   }
 }
-
 /*** Create DynamoDB Table for counter on page ***/
 resource "aws_dynamodb_table" "this" {
   name           = "${var.project}_pagecounter"

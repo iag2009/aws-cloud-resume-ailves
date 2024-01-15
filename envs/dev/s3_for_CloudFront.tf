@@ -2,14 +2,14 @@ locals {
   bucket_name             = "${var.project_long}-${var.environment}-source"
   destination_bucket_name = "${var.project_long}-${var.environment}-replic"
 }
-
+/** Key is used to encrypt data replicated to Replica S3 Bucket **/
 resource "aws_kms_key" "replica" {
   provider = aws.replica
 
   description             = "S3 bucket replication KMS key"
   deletion_window_in_days = 7
 }
-
+/** Replica bucket for Static web site **/
 module "replica_bucket" {
   #source = "../../../../terraform_aws_modules/terraform-aws-s3-bucket"
 
@@ -18,16 +18,16 @@ module "replica_bucket" {
     aws = aws.replica
   }
 
-  bucket = local.destination_bucket_name
-  acl    = var.s3_acl # "private"
-  force_destroy = var.s3_force_destroy
-  versioning = var.s3_versioning
-  logging = {}
+  bucket                   = local.destination_bucket_name
+  acl                      = var.s3_acl # "private"
+  force_destroy            = var.s3_force_destroy
+  versioning               = var.s3_versioning
+  logging                  = {}
   control_object_ownership = var.s3_control_object_ownership
   object_ownership         = var.s3_object_ownership
 
   attach_policy = var.s3_attach_policy
-  policy = <<POLICY
+  policy        = <<POLICY
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -47,15 +47,15 @@ module "replica_bucket" {
 }
 POLICY
 }
-
+/** Source bucket for Static web site **/
 module "s3_bucket" {
   # source = "../../../../terraform_aws_modules/terraform-aws-s3-bucket"
 
-  source = "../modules/s3_bucket"
-  bucket = local.bucket_name
-  acl    = var.s3_acl # "private"
+  source        = "../modules/s3_bucket"
+  bucket        = local.bucket_name
+  acl           = var.s3_acl # "private"
   force_destroy = var.s3_force_destroy
-  versioning = var.s3_versioning
+  versioning    = var.s3_versioning
   logging = {
     target_bucket = var.s3_logging["target_bucket"]
     target_prefix = "log/"

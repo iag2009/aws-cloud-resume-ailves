@@ -4,14 +4,12 @@ variable "aws_account" {
   type        = string
 }
 variable "aws_region" {
-  description = "ECR repositories, which must be in us-east-1 Private and Public repositories можно создать только в us-east-1, иначе ошибка, что terraform не может отрезолвить зону: Post https://api.ecr-public.us-east-2.amazonaws.com/: dial tcp: lookup api.ecr-public.us-east-2.amazonaws.com: no such host"
-  type        = string
-  default     = "us-east-1"
-}
-variable "replication_aws_region" {
   description = "aws region"
   type        = string
-  default     = "us-east-1"
+}
+variable "aws_region_repl" {
+  description = "aws region"
+  type        = string
 }
 variable "regions" {
   type    = list(string)
@@ -20,12 +18,10 @@ variable "regions" {
 variable "solution" {
   description = "Name of Top level solution"
   type        = string
-  default     = "ailves"
 }
 variable "environment" {
   description = "Name of env: dev or uat environment"
   type        = string
-  default     = "dev"
 }
 variable "project" {
   description = "Project Name"
@@ -80,6 +76,44 @@ variable "ecr_create_repository" {
 }
 variable "ecr_create_registry_policy" {
   description = "Determines whether a registry policy will be created"
+  type        = bool
+  default     = false
+}
+/* vars for S3 Bucket */
+variable "s3_force_destroy" {
+  type        = bool
+  description = "a passthrough variable to the created s3 buckets to allow the terraform destroy to succeed in the event that objects are present"
+  default     = true
+}
+variable "s3_acl" {
+  description = "(Optional) The canned ACL to apply. Conflicts with `grant`"
+  type        = string
+  default     = null
+}
+variable "s3_control_object_ownership" {
+  description = "Whether to manage S3 Bucket Ownership Controls on this bucket."
+  type        = bool
+  #default     = false
+  default = true
+}
+variable "s3_object_ownership" {
+  description = "Object ownership. Valid values: BucketOwnerEnforced, BucketOwnerPreferred or ObjectWriter. 'BucketOwnerEnforced': ACLs are disabled, and the bucket owner automatically owns and has full control over every object in the bucket. 'BucketOwnerPreferred': Objects uploaded to the bucket change ownership to the bucket owner if the objects are uploaded with the bucket-owner-full-control canned ACL. 'ObjectWriter': The uploading account will own the object if the object is uploaded with the bucket-owner-full-control canned ACL."
+  type        = string
+  #default     = "BucketOwnerEnforced"
+  default = "BucketOwnerPreferred"
+}
+variable "s3_versioning" {
+  description = "Map containing versioning configuration."
+  type        = map(string)
+  default     = {}
+}
+variable "s3_logging" {
+  description = "Map containing access bucket logging configuration."
+  type        = map(string)
+  default     = {}
+}
+variable "s3_attach_policy" {
+  description = "Controls if S3 bucket should have bucket policy attached (set to `true` to use value of `policy` as bucket policy)"
   type        = bool
   default     = false
 }

@@ -1,8 +1,11 @@
+## This is the application that will be created in the beanstalk
+/*
 resource "aws_elastic_beanstalk_application" "resume" {
   name        = var.project_long
   description = "My Beanstalk application for ${var.project_long}"
-}
-
+}*/
+## This is the environment that will be created in the beanstalk
+/*
 resource "aws_elastic_beanstalk_environment" "resume" {
   name                = "${var.project_long}-env"
   application         = aws_elastic_beanstalk_application.resume.name
@@ -37,13 +40,15 @@ resource "aws_elastic_beanstalk_environment" "resume" {
     name      = "DeleteOnTerminate"
     value     = "true"
   }
-}
-
+}*/
+## This is the instance profile that will be created in the beanstalk
+/*
 resource "aws_iam_instance_profile" "profile" {
   name = "${var.project_long}-profile"
   role = aws_iam_role.role.name
-}
-
+}*/
+## This is the role that will be created in the beanstalk
+/*
 resource "aws_iam_role" "role" {
   name = "${var.project_long}-role"
 
@@ -62,4 +67,4 @@ resource "aws_iam_role" "role" {
   ]
 }
 EOF
-}
+}*/

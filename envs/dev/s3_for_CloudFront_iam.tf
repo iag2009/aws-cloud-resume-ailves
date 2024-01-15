@@ -1,3 +1,4 @@
+## IAM Role for S3 replication
 resource "aws_iam_role" "replication" {
   name = "s3-bucket-replication-${var.solution}"
 
@@ -17,7 +18,7 @@ resource "aws_iam_role" "replication" {
 }
 POLICY
 }
-
+## IAM Policy for S3 replication
 resource "aws_iam_policy" "replication" {
   name = "s3-bucket-replication-${var.solution}"
 
@@ -57,7 +58,7 @@ resource "aws_iam_policy" "replication" {
 }
 POLICY
 }
-
+## Attach IAM policy to IAM role
 resource "aws_iam_policy_attachment" "replication" {
   name       = "s3-bucket-replication-${var.solution}"
   roles      = [aws_iam_role.replication.name]

@@ -1,3 +1,4 @@
+## Lambda to update DynamoDB counter
 resource "aws_lambda_function" "this" {
   filename         = data.archive_file.zip_the_python_code.output_path
   source_code_hash = data.archive_file.zip_the_python_code.output_base64sha256
@@ -6,13 +7,13 @@ resource "aws_lambda_function" "this" {
   handler          = "func.handler"
   runtime          = "python3.8"
 }
-
+## Archive Lambda source code
 data "archive_file" "zip_the_python_code" {
   type        = "zip"
   source_file = "${path.module}/lambda/func.py"
   output_path = "${path.module}/lambda/func.zip"
 }
-
+## Create IAM role for Lambda
 resource "aws_iam_role" "iam_for_lambda" {
   name = "iam_for_lambda"
 
@@ -32,7 +33,7 @@ resource "aws_iam_role" "iam_for_lambda" {
 }
 EOF
 }
-
+## Attach IAM policy to IAM role
 resource "aws_iam_policy" "iam_policy_for_resume_project" {
 
   name        = "aws_iam_policy_for_terraform_resume_project_policy"
@@ -67,7 +68,7 @@ resource "aws_iam_role_policy_attachment" "attach_iam_policy_to_iam_role" {
   role       = aws_iam_role.iam_for_lambda.name
   policy_arn = aws_iam_policy.iam_policy_for_resume_project.arn
 }
-
+## Create URL для функции AWS Lambda, который может быть использован для вызова функции без авторизации
 resource "aws_lambda_function_url" "this" {
   function_name      = aws_lambda_function.this.function_name
   authorization_type = "NONE"
