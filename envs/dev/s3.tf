@@ -1,31 +1,6 @@
-/*
-provider "aws" {
-  region = local.origin_region
-  
-  # Make it faster by skipping something
-  #skip_metadata_api_check     = true
-  #skip_region_validation      = true
-  #skip_credentials_validation = true
-  #skip_requesting_account_id  = true
-}
-
-provider "aws" {
-  region = local.replica_region
-
-  alias = "replica"
-
-  # Make it faster by skipping something
-  #skip_metadata_api_check     = true
-  #skip_region_validation      = true
-  #skip_credentials_validation = true
-  #skip_requesting_account_id  = true
-}
-*/
 locals {
   bucket_name             = "${var.project_long}-${var.environment}-source"
   destination_bucket_name = "${var.project_long}-${var.environment}-replic"
-  #origin_region           = var.aws_region
-  #replica_region          = var.aws_region_repl
 }
 
 resource "aws_kms_key" "replica" {
@@ -38,22 +13,20 @@ resource "aws_kms_key" "replica" {
 module "replica_bucket" {
   #source = "../../../../terraform_aws_modules/terraform-aws-s3-bucket"
 
-  source = "../modules/s3"
+  source = "../modules/s3_bucket"
   providers = {
     aws = aws.replica
   }
 
   bucket = local.destination_bucket_name
-  acl    = "private"
-  force_destroy = false
+  acl    = var.s3_acl # "private"
+  force_destroy = var.s3_force_destroy
+  versioning = var.s3_versioning
+  logging = {}
+  control_object_ownership = var.s3_control_object_ownership
+  object_ownership         = var.s3_object_ownership
 
-  versioning = {
-    enabled = true
-  }
-  control_object_ownership = true
-  object_ownership         = "BucketOwnerPreferred"
-
-  attach_policy = false
+  attach_policy = var.s3_attach_policy
   policy = <<POLICY
 {
   "Version": "2012-10-17",
@@ -78,19 +51,19 @@ POLICY
 module "s3_bucket" {
   # source = "../../../../terraform_aws_modules/terraform-aws-s3-bucket"
 
-  source = "../modules/s3"
+  source = "../modules/s3_bucket"
   bucket = local.bucket_name
-  acl    = "private"
-  force_destroy = false
-
-  versioning = {
-    enabled = true
+  acl    = var.s3_acl # "private"
+  force_destroy = var.s3_force_destroy
+  versioning = var.s3_versioning
+  logging = {
+    target_bucket = var.s3_logging["target_bucket"]
+    target_prefix = "log/"
   }
-  
-  control_object_ownership = true
-  object_ownership         = "BucketOwnerPreferred"
+  control_object_ownership = var.s3_control_object_ownership
+  object_ownership         = var.s3_object_ownership
 
-  attach_policy = false
+  attach_policy = var.s3_attach_policy
   /*
   policy = <<POLICY
 {
@@ -209,3 +182,34 @@ POLICY
     ]
   }
 }
+
+/*
+module "object" {
+  source = "../../modules/s3_object"
+
+  bucket = module.s3_bucket.s3_bucket_id
+  key    = "key-local"
+
+  file_source = "one.md"
+  #  content = file("README.md")
+  #  content_base64 = filebase64("README.md")
+
+  tags = {
+    Sensitive = "not-really"
+  }
+}
+
+variable "source_dir" {
+  type = string
+  description = "The source directory to upload to S3"
+  default = "${dirname(dirname(dirname(path.module)))}/website"
+}
+*/
+#resource "aws_s3_object" "object" {
+#  for_each = { for f in fileset(var.source_dir, "**/*") : f => f }
+#  bucket = module.s3_bucket.s3_bucket_id
+#  key    = each.value
+#  source = "${var.source_dir}/${each.value}"
+#  acl    = "bucket-owner-full-control"
+#  etag   = filemd5("${var.source_dir}/${each.value}")
+#}

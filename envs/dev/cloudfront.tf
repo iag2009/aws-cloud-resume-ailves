@@ -1,14 +1,5 @@
-resource "aws_s3_bucket" "this" {
-  bucket = "${var.project_long}-${var.environment}"
-  lifecycle {
-    prevent_destroy = false
-  }
-  tags = {
-    Name = "${var.project_long}-${var.environment}"
-  }
-}
 resource "aws_s3_bucket_policy" "this" {
-  bucket = aws_s3_bucket.this.id
+  bucket = module.s3_bucket.s3_bucket_id
   policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -19,7 +10,7 @@ resource "aws_s3_bucket_policy" "this" {
         "Service": "cloudfront.amazonaws.com"
       },
       "Action": "s3:GetObject",
-      "Resource": "${aws_s3_bucket.this.arn}/*",
+      "Resource": "${module.s3_bucket.s3_bucket_arn}/*",
       "Condition": {
         "StringEquals": {
           "aws:SourceArn": "arn:aws:cloudfront::${var.aws_account}:distribution/${aws_cloudfront_distribution.this.id}"
@@ -86,9 +77,9 @@ resource "aws_acm_certificate_validation" "this" {
 /** Create a cloudfront distribution **/
 resource "aws_cloudfront_distribution" "this" {
   origin {
-    domain_name              = aws_s3_bucket.this.bucket_regional_domain_name
+    domain_name              = module.s3_bucket.s3_bucket_bucket_regional_domain_name
     origin_access_control_id = aws_cloudfront_origin_access_control.this.id
-    origin_id                = "S3-${aws_s3_bucket.this.bucket}"
+    origin_id                = "S3-${module.s3_bucket.s3_bucket_id}"
   }
   aliases = ["ailves2009.com", "*.ailves2009.com"]
 
@@ -98,7 +89,7 @@ resource "aws_cloudfront_distribution" "this" {
   default_root_object = "index.html"
 
   default_cache_behavior {
-    target_origin_id       = "S3-${aws_s3_bucket.this.bucket}"
+    target_origin_id       = "S3-${module.s3_bucket.s3_bucket_id}"
     viewer_protocol_policy = "redirect-to-https"
 
     allowed_methods = ["GET", "HEAD", "OPTIONS"]

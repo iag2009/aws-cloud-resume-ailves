@@ -15,7 +15,7 @@ locals {
 ################################################################################
 
 module "private_ecr" {
-  #  ссылка на мой модуль, который я выложил в репозиторий terraform-aws-modules/ailves_aws_ecr
+  #  ссылка на мой модуль, который я немного отличается от оигинального возможностью раздачи прав
   # source = "../modules/ailves_aws_ecr"
   # providers = {
   #   aws.instancemaker = aws.us-east-1
@@ -56,7 +56,6 @@ module "private_ecr" {
 }
 
 module "public_ecr" {
-  #  ссылка на мой модуль, который я выложил в репозиторий terraform-aws-modules/ailves_aws_ecr
   # source = "../modules/ailves_aws_ecr"
   # providers = {
   #   aws.instancemaker = aws.us-east-1
@@ -124,7 +123,6 @@ data "aws_iam_policy_document" "registry" {
 }
 
 module "ecr_registry" {
-  #  ссылка на мой модуль, который я выложил в репозиторий terraform-aws-modules/ailves_aws_ecr
   # source = "../modules/ailves_aws_ecr"
   # providers = {
   #   aws.instancemaker = aws.us-east-1
@@ -165,11 +163,13 @@ module "ecr_registry" {
   create_registry_replication_configuration = true
   registry_replication_rules = [
     {
-      destinations = [{
-        region      = "us-west-2"
-        registry_id = data.aws_caller_identity.current.account_id
-        }, {
-        region      = "eu-west-1"
+      destinations = [
+        #{
+        #region      = "${var.aws_region}"
+        #registry_id = data.aws_caller_identity.current.account_id
+        #}, 
+        {
+        region      = "${var.aws_region_repl}"
         registry_id = data.aws_caller_identity.current.account_id
       }]
 

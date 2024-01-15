@@ -17,7 +17,7 @@ terraform {
 }
 
 provider "aws" {
-  # second provider for ACM certificates, and ECR repositories, which must be in us-east-1
+  # provider for s3 replica
   alias = "replica"
   region = var.aws_region_repl
   default_tags {
@@ -37,6 +37,7 @@ provider "aws" {
   #skip_requesting_account_id  = true
 }
 provider "aws" {
+  # second provider for ACM certificates, and ECR repositories, which must be in us-east-1
   alias  = "us-east-1"
   region = "us-east-1"
 }
@@ -44,12 +45,17 @@ provider "aws" {
 provider "aws" {
   region = var.aws_region
   # profile = "da-sb"   # Who will get access to destination account
-
   /* assume_role {
     role_arn     = "arn:aws:iam::${var.DEPLOY_INTO_ACCOUNT_ID}:role/TerraformRole"
     session_name = "Terraform"
     external_id  = "${var.ASSUME_ROLE_EXTERNAL_ID}"
   } */
+  
+  # Make it faster by skipping something
+  #skip_metadata_api_check     = true
+  #skip_region_validation      = true
+  #skip_credentials_validation = true
+  #skip_requesting_account_id  = true
 
   default_tags {
     tags = {

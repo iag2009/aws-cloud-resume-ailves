@@ -25,6 +25,18 @@ resource "aws_elastic_beanstalk_environment" "resume" {
     name      = "MaxSize"
     value     = "3"
   }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs"
+    name      = "StreamLogs"
+    value     = "true"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:cloudwatch:logs"
+    name      = "DeleteOnTerminate"
+    value     = "true"
+  }
 }
 
 resource "aws_iam_instance_profile" "profile" {
