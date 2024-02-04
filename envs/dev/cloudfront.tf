@@ -55,6 +55,7 @@ resource "aws_cloudfront_distribution" "this" {
     origin_id                = "S3-${module.s3_bucket.s3_bucket_id}"
   }
   aliases = ["ailves2009.com", "*.ailves2009.com"]
+  price_class = "PriceClass_100"
 
   enabled             = true
   is_ipv6_enabled     = true
