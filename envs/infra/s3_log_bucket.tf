@@ -21,7 +21,19 @@ module "log_bucket" {
 
   control_object_ownership = var.s3_control_object_ownership
   object_ownership         = var.s3_object_ownership
+  lifecycle_rule = [
+    {
+      id      = "autodelete"
+      status  = "Enabled"
+      enabled = true
 
+      expiration = [
+        {
+          days = 7
+        }
+      ]
+    }
+  ]
   attach_elb_log_delivery_policy = true
   attach_lb_log_delivery_policy  = true
   attach_policy                  = var.s3_attach_policy

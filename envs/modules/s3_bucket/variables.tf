@@ -190,7 +190,6 @@ variable "website" {
   type        = any # map(string)
   default     = {}
 }
-
 /*
 variable "prevent_destroy" {
   type = string
