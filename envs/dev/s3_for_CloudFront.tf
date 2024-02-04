@@ -58,7 +58,7 @@ module "s3_bucket" {
   versioning    = var.s3_versioning
   logging = {
     target_bucket = var.s3_logging["target_bucket"]
-    target_prefix = "log/"
+    target_prefix = "s3-${var.project}-logs/"
   }
   control_object_ownership = var.s3_control_object_ownership
   object_ownership         = var.s3_object_ownership
