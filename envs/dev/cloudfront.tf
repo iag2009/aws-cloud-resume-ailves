@@ -54,7 +54,7 @@ resource "aws_cloudfront_distribution" "this" {
     origin_access_control_id = aws_cloudfront_origin_access_control.this.id
     origin_id                = "S3-${module.s3_bucket.s3_bucket_id}"
   }
-  aliases = ["ailves2009.com", "*.ailves2009.com"]
+  aliases     = ["ailves2009.com", "*.ailves2009.com"]
   price_class = "PriceClass_100"
 
   enabled             = true
@@ -77,6 +77,12 @@ resource "aws_cloudfront_distribution" "this" {
     min_ttl     = 0
     default_ttl = 3600
     max_ttl     = 86400
+
+    lambda_function_association {
+      event_type   = "viewer-request"
+      lambda_arn   = "${aws_lambda_function.cfle.arn}:${aws_lambda_function.cfle.version}"
+      include_body = false
+    }
   }
 
   restrictions {
@@ -94,6 +100,15 @@ resource "aws_cloudfront_distribution" "this" {
     Name = "${var.project_long}-${var.environment}"
   }
 }
+output "cloudfront_etag" {
+  description = "The current version of the CloudFront Distribution"
+  value       = aws_cloudfront_distribution.this.etag
+}
+output "cloudfront_domain_name" {
+  description = "The domain name of the CloudFront Distribution"
+  value       = aws_cloudfront_distribution.this  .domain_name
+}
+
 /** Create a route53 record for CV page on cloudfront distribution **/
 resource "aws_route53_record" "cv" {
   zone_id = data.aws_route53_zone.this.zone_id
