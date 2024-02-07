@@ -75,5 +75,5 @@ var mySwiper = new Swiper('.swiper-container', {
     direction: 'vertical', // прокручивание вертикально
     slidesPerView: 'auto', // автоматическое определение количества видимых слайдов
     //freeMode: true, // включить свободный режим (плавное прокручивание)
-    //mousewheel: true, // включить прокрутку колесом мыши
+    mousewheel: true, // включить прокрутку колесом мыши
 });
