@@ -81,7 +81,7 @@ resource "aws_cloudfront_distribution" "this" {
     lambda_function_association {
       event_type   = "viewer-request"
       lambda_arn   = "${aws_lambda_function.cfle.arn}:${aws_lambda_function.cfle.version}"
-      include_body = false
+      include_body = false #тело запроса не будет передано в функцию Lambda
     }
   }
 
