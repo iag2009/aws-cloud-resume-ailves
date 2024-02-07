@@ -115,7 +115,7 @@ data "archive_file" "zip_the_python_code_cfle" {
 }
 
 resource "aws_cloudwatch_log_group" "cfle" {
-  provider         = aws.us-east-1
+  provider          = aws.us-east-1
   name              = "/aws/lambda/update_dynamodb_counter_cfle"
   retention_in_days = 14
 }

@@ -106,7 +106,7 @@ output "cloudfront_etag" {
 }
 output "cloudfront_domain_name" {
   description = "The domain name of the CloudFront Distribution"
-  value       = aws_cloudfront_distribution.this  .domain_name
+  value       = aws_cloudfront_distribution.this.domain_name
 }
 
 /** Create a route53 record for CV page on cloudfront distribution **/
