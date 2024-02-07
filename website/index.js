@@ -58,10 +58,22 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 const counter = document.querySelector(".counter-number");
+/*
 async function updateCounter() {
     let response = await fetch("https://d5yoc3hazhsefvejggny3xgk4u0lqrlk.lambda-url.us-east-2.on.aws/");
     let data = await response.json();
     counter.innerHTML = `👀 Views: ${data}`;
+}
+*/
+async function updateCounter() {
+    try {
+//        let response = await fetch("https://d5yoc3hazhsefvejggny3xgk4u0lqrlk.lambda-url.us-east-2.on.aws/");
+        let response = await fetch("https://d5yoc3hazhsefvejggny3xgk4u0lqrlk.lambda-url.us-east-2.on.aws/", { mode: 'no-cors' });
+        let data = await response.json();
+        counter.innerHTML = `👀 Views: ${data.views}`;
+    } catch (error) {
+        console.error('Error:', error);
+    }
 }
 updateCounter();
 
