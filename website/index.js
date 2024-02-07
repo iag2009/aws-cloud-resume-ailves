@@ -63,7 +63,7 @@ async function updateCounter() {
     try {
         let response = await fetch("https://d5yoc3hazhsefvejggny3xgk4u0lqrlk.lambda-url.us-east-2.on.aws/");
         let data = await response.json();
-        counter.innerHTML = `👀 Views1: ${data.views}`;
+        counter.innerHTML = `👀 Views: ${data.views}`;
     } catch (error) {
         console.error('Error:', error);
     }
@@ -72,7 +72,7 @@ updateCounter();
 
 var mySwiper = new Swiper('.swiper-container', {
     // параметры
-    direction: 'vertical', // прокручивание вертикально
+    direction: 'horizontal', // прокручивание вертикально
     slidesPerView: 'auto', // автоматическое определение количества видимых слайдов
     freeMode: true, // включить свободный режим (плавное прокручивание)
     mousewheel: true, // включить прокрутку колесом мыши
