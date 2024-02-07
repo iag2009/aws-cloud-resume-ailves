@@ -71,8 +71,8 @@ async function updateCounter() {
 updateCounter();
 
 var mySwiper = new Swiper('.swiper-container', {
-    direction: 'vertical', // прокручивание вертикально
-    slidesPerView: 'auto', // автоматическое определение количества видимых слайдов
+    //direction: 'vertical', // прокручивание вертикально
+    //slidesPerView: 'auto', // автоматическое определение количества видимых слайдов
     //freeMode: true, // включить свободный режим (плавное прокручивание)
     //freeModeSticky: true, // make swiper stick to positions after you release it
     //mousewheel: true, // включить прокрутку колесом мыши
