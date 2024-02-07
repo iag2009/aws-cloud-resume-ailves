@@ -58,13 +58,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 const counter = document.querySelector(".counter-number");
-/*
-async function updateCounter() {
-    let response = await fetch("https://d5yoc3hazhsefvejggny3xgk4u0lqrlk.lambda-url.us-east-2.on.aws/");
-    let data = await response.json();
-    counter.innerHTML = `👀 Views: ${data}`;
-}
-*/
+
 async function updateCounter() {
     try {
         let response = await fetch("https://d5yoc3hazhsefvejggny3xgk4u0lqrlk.lambda-url.us-east-2.on.aws/");
@@ -75,29 +69,6 @@ async function updateCounter() {
     }
 }
 updateCounter();
-
-// New Counter from GPT
-/*
-const globalCounter = document.querySelector(".counter-number");
-const localCounter = document.getElementById("counterValue");
-
-async function updateGlobalCounter() {
-    let response = await fetch("https://111oukdrjhj4x5aeoiahmyxxe0jqgsv.lambda-url.us-east-1.on.aws/");
-    let data = await response.json();
-    globalCounter.innerHTML = `👀 Views: ${data}`;
-}
-
-async function updateLocalCounter() {
-    let response = await fetch("https://your-new-counter-endpoint"); // Replace with your new counter endpoint
-    let data = await response.json();
-    localCounter.innerHTML = `Local Views: ${data}`;
-}
-
-// Call the update functions
-updateGlobalCounter();
-updateLocalCounter();
-*/
-// End New Counter from GPT
 
 var mySwiper = new Swiper('.swiper-container', {
     // параметры
