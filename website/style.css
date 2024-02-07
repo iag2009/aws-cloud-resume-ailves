@@ -297,3 +297,7 @@ body{
 .eye :hover{
     color: var(--color-white);
 }
+
+.swiper-container {
+    -webkit-overflow-scrolling: touch;
+  }
