@@ -38,9 +38,9 @@ var typed = new Typed('#typed', {
 
 var typed_2 = new Typed('#typed_2', {
     strings: [
-        '(&nbsp;)Cloud Engineer',
-        '(&nbsp;)Cloud Architect',
-        '(&nbsp;)DevOps Engineer'
+        '&nbsp;Cloud Engineer',
+        '&nbsp;Cloud Architect',
+        '&nbsp;DevOps Engineer'
     ],
     typeSpeed: 50,
     backSpeed: 50,
