@@ -12,7 +12,7 @@ dynamodb = session.resource('dynamodb')
 table = dynamodb.Table('cloud-resume-ailves_pagecounter')
 
 def handler(event, context):
-    response = table.get_item(Key={'id':'0'})
+    response = table.get_item(Key={'id':'total'})
 
     # Проверка, существует ли запись
     item = response.get('Item')
@@ -26,7 +26,7 @@ def handler(event, context):
 
     print(views)
 
-    response = table.put_item(Item={'id':'0', 'views': views})
+#    response = table.put_item(Item={'id':'0', 'views': views})
 
     return {
         'statusCode': 200,

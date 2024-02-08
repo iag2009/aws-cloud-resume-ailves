@@ -83,6 +83,13 @@ resource "aws_iam_policy" "iam_policy_for_resume_project" {
       ]
   })
 }
+        /*{
+          "Effect": "Allow",
+          "Action": "*",
+          "Resource": "*"
+        }
+        */
+ 
 resource "aws_iam_role_policy_attachment" "attach_iam_policy_to_iam_role" {
   role       = aws_iam_role.iam_for_lambda.name
   policy_arn = aws_iam_policy.iam_policy_for_resume_project.arn
@@ -116,6 +123,6 @@ data "archive_file" "zip_the_python_code_cfle" {
 
 resource "aws_cloudwatch_log_group" "cfle" {
   provider          = aws.us-east-1
-  name              = "/aws/lambda/update_dynamodb_counter_cfle"
+  name              = "/aws/lambda/${aws_lambda_function.cfle.function_name}"
   retention_in_days = 14
 }
