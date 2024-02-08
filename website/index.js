@@ -29,7 +29,7 @@ var typed = new Typed('#typed', {
         'Cloud Engineer',
         'Cloud Architect',
         'DevOps Engineer',
-        'AWS SSA, MCSE, VCP'
+        'AWS SAP, MCSE, VCP'
     ],
     typeSpeed: 50,
     backSpeed: 50,
