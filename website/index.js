@@ -48,10 +48,15 @@ var typed_2 = new Typed('#typed_2', {
 });
 ***/
     var typed_2 = new Typed('#typed_2', {
-        stringsElement: '.typing',
+        strings: [
+            "I'm Aleksandr Ilves & a<br>Cloud Engineer",
+            "I'm Aleksandr Ilves & a<br>Cloud Architect",
+            "I'm Aleksandr Ilves & a<br>DevOps Engineer"
+        ],
         typeSpeed: 50,
         backSpeed: 50,
-        loop: true
+        loop: true,
+        allowHTML: true
     });
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
