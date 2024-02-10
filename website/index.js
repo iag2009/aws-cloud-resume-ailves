@@ -63,7 +63,7 @@ async function updateCounter() {
     try {
         let response = await fetch("https://wwwzmykydj4ad2ki5axcp3luxi0altoz.lambda-url.us-east-2.on.aws/");
         let data = await response.json();
-        counter.innerHTML = `👀 Views : ${data.views}`;
+        counter.innerHTML = `👀 Views: ${data.views}`;
     } catch (error) {
         console.error('Error:', error);
     }
