@@ -6,46 +6,55 @@
 #
 # Made by Aleksandr Ilves Copyleft (c) 2024
 #---------------------------------------------------------------------
-    name: CI-CD-Pipeline-to-AWS-S3
-    env:
-      EB_PACKAGE_S3_BUCKET_NAME : "aws-cloud-resume-ailves-dev-source"
-      EB_APPLICATION_NAME       : "ailves-common-infra"
-      EB_ENVIRONMENT_NAME       : "ailves-common-infra-env"
-      DEPLOY_PACKAGE_NAME       : "aws-cloud-resume-ailves_${{ github.sha }}.zip"
-      AWS_REGION_NAME           : "us-east-2"
-    
-    on: 
-      push:
-        branches: 
-          - master
-    
-    jobs:
-      my_ci_part:
-        runs-on: ubuntu-latest
-    
-        steps:
-        - name: Git clone our repo
-          uses: actions/checkout@v3
-           
-#        - name: Create ZIP deployment package
-#          run: |
-#            cd website
-#            zip -r ../${{ env.DEPLOY_PACKAGE_NAME }} * -x *.git*
-          
-        - name: Configure my AWS Credentials
-          uses: aws-actions/configure-aws-credentials@v3
-          with:
-            aws-access-key-id    :  ${{ secrets.AWS_ACCESS_KEY }}
-            aws-secret-access-key:  ${{ secrets.AWS_SECRET_KEY }}
-            aws-region           :  ${{ env.AWS_REGION_NAME }}
-            
-          
-#        - name: Copy Deployment package to S3 bucket
-#          run: aws s3 cp ${{ env.DEPLOY_PACKAGE_NAME }} s3://${{ env.EB_PACKAGE_S3_BUCKET_NAME }}/
-        - name: Sync website directory to S3 bucket
-#          run: aws s3 sync website/ s3://${{ env.EB_PACKAGE_S3_BUCKET_NAME }}/ --delete
-          run: aws s3 sync website/ s3://${{ env.EB_PACKAGE_S3_BUCKET_NAME }}/
+  name: CI-CD-Pipeline-to-AWS-S3
+  env:
+    EB_PACKAGE_S3_BUCKET_NAME : "aws-cloud-resume-ailves-dev-source"
+    EB_APPLICATION_NAME       : "ailves-common-infra"
+    EB_ENVIRONMENT_NAME       : "ailves-common-infra-env"
+    DEPLOY_PACKAGE_NAME       : "aws-cloud-resume-ailves_${{ github.sha }}.zip"
+    AWS_REGION_NAME           : "us-east-2"
+  
+  on: 
+    push:
+      branches: 
+        - master
+  
+  jobs:
+    my_ci_part:
+      runs-on: ubuntu-latest
+  
+      steps:
+      - name: Git clone our repo
+        uses: actions/checkout@v3
+  
+      # Setup Git LFS and pull the LFS files
+      - name: Setup Git LFS
+        run: |
+          git lfs install
+          git lfs pull
+  
+      # Commented out: Create ZIP deployment package
+      #- name: Create ZIP deployment package
+      #  run: |
+      #    cd website
+      #    zip -r ../${{ env.DEPLOY_PACKAGE_NAME }} * -x *.git*
+  
+      - name: Configure my AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id    :  ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key:  ${{ secrets.AWS_SECRET_KEY }}
+          aws-region           :  ${{ env.AWS_REGION_NAME }}
+  
+      # Commented out: Copy Deployment package to S3 bucket
+      #- name: Copy Deployment package to S3 bucket
+      #  run: aws s3 cp ${{ env.DEPLOY_PACKAGE_NAME }} s3://${{ env.EB_PACKAGE_S3_BUCKET_NAME }}/
+  
+      - name: Sync website directory to S3 bucket
+        # Commented out: --delete option
+        # run: aws s3 sync website/ s3://${{ env.EB_PACKAGE_S3_BUCKET_NAME }}/ --delete
+        run: aws s3 sync website/ s3://${{ env.EB_PACKAGE_S3_BUCKET_NAME }}/
+  
+      - name: Print Happy Message for CI finish
+        run : echo "CI Pipeline part Finished successfully!"
         
-        - name: Print Happy Message for CI finish
-          run : echo "CI Pipeline part Finished successfully!"
-    
