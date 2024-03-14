@@ -21,9 +21,10 @@ include:
 
 stages:          # List of stages for jobs, and their order of execution
   - validate
-  - build
   - test
+  - build
   - deploy
+  - cleanup
 
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
