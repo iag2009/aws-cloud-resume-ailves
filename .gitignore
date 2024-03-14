@@ -1,5 +1,5 @@
 .DS_Store
-**/website/assetss/*.mp4
+website/assetss/*.mp4
 envs/tst/**
 envs/dev/outputfile.txt
 envs/dev/payload.json
