@@ -20,6 +20,7 @@ include:
   template: Terraform.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform-Module.gitlab-ci.yml
 
 stages:          # List of stages for jobs, and their order of execution
+  - validate
   - build
   - test
   - deploy
