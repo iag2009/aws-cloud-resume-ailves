@@ -30,7 +30,8 @@ build-job:       # This job runs in the build stage, which runs first.
   stage: build
   script:
     - echo "Compiling the code..."
-    - cd /envs/dev
+    - cd envs/dev
+    - gitlab-terraform init
     - gitlab-terraform plan
     - echo "Compile complete."
 
