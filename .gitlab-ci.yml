@@ -16,17 +16,6 @@
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
 
-include:
-  # 1: include the component
-  - component: gitlab.com/to-be-continuous/terraform/gitlab-ci-terraform@5.4.0
-    # 2: set/override component inputs
-    inputs:
-      # ⚠ this is only an example
-      image: registry.hub.docker.com/hashicorp/terraform:5.3.0
-      review-enabled: true
-      staging-enabled: true
-      prod-enabled: true
-
 stages:          # List of stages for jobs, and their order of execution
   - build
   - test
