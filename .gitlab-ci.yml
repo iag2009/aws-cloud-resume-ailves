@@ -26,13 +26,19 @@ stages:          # List of stages for jobs, and their order of execution
   - deploy
   - cleanup
 
+variables:
+  TF_ROOT: "envs/dev"
+
+plan:
+  stage: build
+  script:
+    - gitlab-terraform init
+    - gitlab-terraform plan
+
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
   script:
     - echo "Compiling the code..."
-    - cd envs/dev
-    - gitlab-terraform init -chdir=envs/dev
-    - gitlab-terraform plan -chdir=envs/dev
     - echo "Compile complete."
 
 unit-test-job:   # This job runs in the test stage.
