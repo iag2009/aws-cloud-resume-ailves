@@ -10,8 +10,11 @@ terraform {
   required_version = ">= 0.13.1"
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
-      version = ">= 4.9"
+      source = "hashicorp/aws"
+      # Было ">= 4.9" при залоченной 5.32.1 (январь 2024) — эта версия не
+      # знает про актуальные рантаймы Lambda. Верхняя граница нужна, чтобы
+      # мажорный релиз провайдера не приехал сам собой.
+      version = "~> 5.100"
     }
     random = {
       source  = "hashicorp/random"

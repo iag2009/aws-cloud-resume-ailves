@@ -1,27 +1,34 @@
-## Create a random pet name
-resource "random_pet" "this" {
-  length = 1
-}
-## Create a Secret in Secrets Manager
-resource "aws_secretsmanager_secret" "site_secrets" {
-  name = "${random_pet.this.id}-site-secrets"
-}
-## Create a Admin Name parameter in Secret Manager
-resource "aws_secretsmanager_secret_version" "admin_name" {
-  secret_id = aws_secretsmanager_secret.site_secrets.id
-  secret_string = jsonencode({
-    admin_name = "admin"
-  })
-}
-## Create a Domain Name parameter in Secret Manager
-resource "aws_secretsmanager_secret_version" "domain_name" {
-  secret_id     = aws_secretsmanager_secret.site_secrets.id
-  secret_string = var.domain_name
-}
-## Create a Domain Name parameter in SSM Parameter Store
+/**
+ * Параметры конфигурации сайта.
+ *
+ * Раньше здесь был Secrets Manager ($0.40/секрет/мес) с двумя
+ * aws_secretsmanager_secret_version на один и тот же secret_id — они
+ * перетирали друг друга на каждом apply, поэтому значение секрета было
+ * недетерминированным. Плюс random_pet делал имя секрета неугадываемым
+ * ("eel-site-secrets"), так что прочитать его никто и не пытался.
+ *
+ * Ни admin_name, ни domain_name секретами не являются — domain_name вообще
+ * публичен. Оставляем только SSM Parameter Store Standard: он бесплатен
+ * и даёт стабильные, предсказуемые имена параметров.
+ */
 resource "aws_ssm_parameter" "domain_name" {
   name        = "/${var.project}/${var.environment}/parameters/domain_name"
   description = "The domain name for the application"
-  type        = "SecureString"
-  value       = aws_secretsmanager_secret_version.domain_name.secret_string
+  type        = "String"
+  value       = var.domain_name
+
+  tags = {
+    Name = "${var.project}-${var.environment}-domain-name"
+  }
+}
+
+resource "aws_ssm_parameter" "admin_name" {
+  name        = "/${var.project}/${var.environment}/parameters/admin_name"
+  description = "The administrator account name for the application"
+  type        = "String"
+  value       = var.admin_name
+
+  tags = {
+    Name = "${var.project}-${var.environment}-admin-name"
+  }
 }

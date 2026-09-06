@@ -1,5 +1,13 @@
 .DS_Store
-**/website/assetss/*.mp4
+
+# Опечатка "assetss" (три s) означала, что правило никогда не срабатывало,
+# и видео-резюме на 246 МБ уехало в репозиторий: .git весит 498 МБ.
+website/assets/*.mp4
+
+# Артефакты сборки Lambda: .zip генерируется data.archive_file из
+# envs/dev/lambda/*.py.tftpl, коммитить его не нужно.
+envs/*/lambda/*.zip
+
 envs/tst/**
 envs/dev/outputfile.txt
 envs/dev/payload.json

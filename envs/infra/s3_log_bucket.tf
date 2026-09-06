@@ -2,13 +2,6 @@ locals {
   bucket_name = "ailves-2009-logs-us-east-2"
 }
 
-resource "aws_kms_key" "replica" {
-  provider = aws.replica
-
-  description             = "S3 bucket replication KMS key"
-  deletion_window_in_days = 7
-}
-
 module "log_bucket" {
   # source  = "terraform-aws-modules/s3-bucket/aws"
   # version = "~> 2.0"

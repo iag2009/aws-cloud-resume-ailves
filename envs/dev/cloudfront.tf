@@ -94,7 +94,7 @@ resource "aws_cloudfront_distribution" "this" {
     // cloudfront_default_certificate = true
     acm_certificate_arn      = data.aws_acm_certificate.wildcard.arn
     ssl_support_method       = "sni-only"
-    minimum_protocol_version = "TLSv1.1_2016"
+    minimum_protocol_version = "TLSv1.2_2021"
   }
   tags = {
     Name = "${var.project_long}-${var.environment}"
@@ -131,34 +131,35 @@ resource "aws_route53_record" "root" {
     evaluate_target_health = false
   }
 }
-/*** Create DynamoDB Table for counter on page ***/
+/***
+ * DynamoDB Table for the page-view counter.
+ *
+ * Было: PROVISIONED 20 RCU / 20 WCU + GSI на 10/10 = 30/30 при free tier
+ * 25/25, что давало $3.48/мес на таблице из 45 записей общим объёмом 993 байта.
+ * GSI "ViewsIndex" не читался ни из одной Lambda.
+ *
+ * Стало: PAY_PER_REQUEST. При текущем трафике это ~$0.00 и нет риска
+ * троттлинга на всплеске.
+ ***/
 resource "aws_dynamodb_table" "this" {
-  name           = "${var.project}_pagecounter"
-  billing_mode   = "PROVISIONED"
-  read_capacity  = 20
-  write_capacity = 20
-  hash_key       = "id"
-  // range_key      = "GameTitle"
+  name         = "${var.project}_pagecounter"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "id"
 
   attribute {
     name = "id"
     type = "S"
   }
-  attribute {
-    name = "views"
-    type = "N"
+
+  point_in_time_recovery {
+    enabled = false
   }
-  global_secondary_index {
-    name            = "ViewsIndex"
-    hash_key        = "views"
-    write_capacity  = 10
-    read_capacity   = 10
-    projection_type = "ALL"
-  }
+
   ttl {
     attribute_name = "TimeToExist"
     enabled        = true
   }
+
   tags = {
     Name = "dynamodb-pagecounter"
   }

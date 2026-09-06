@@ -57,15 +57,26 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
+// Элемент счётчика сейчас закомментирован в index.html, поэтому querySelector
+// возвращает null и старый код падал с TypeError на каждой загрузке страницы.
 const counter = document.querySelector(".counter-number");
 
+const COUNTER_API = "https://wwwzmykydj4ad2ki5axcp3luxi0altoz.lambda-url.us-east-2.on.aws/";
+
 async function updateCounter() {
+    if (!counter) {
+        return;
+    }
     try {
-        let response = await fetch("https://wwwzmykydj4ad2ki5axcp3luxi0altoz.lambda-url.us-east-2.on.aws/");
-        let data = await response.json();
-        counter.innerHTML = `👀 Views: ${data.views}`;
+        const response = await fetch(COUNTER_API);
+        if (!response.ok) {
+            throw new Error(`counter API returned ${response.status}`);
+        }
+        const data = await response.json();
+        counter.textContent = `👀 Views: ${data.views}`;
     } catch (error) {
         console.error('Error:', error);
+        // Счётчик — украшение, а не контент: молча оставляем блок пустым.
     }
 }
 updateCounter();

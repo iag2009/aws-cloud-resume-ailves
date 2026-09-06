@@ -1,67 +1,70 @@
-# This file is a template, and might need editing before it works on your project.
-# This is a sample GitLab CI/CD configuration file that should run without any modifications.
-# It demonstrates a basic 3 stage CI/CD pipeline. Instead of real tests or scripts,
-# it uses echo commands to simulate the pipeline execution.
+#---------------------------------------------------------------------
+# Проверка Terraform-конфигурации проекта.
 #
-# A pipeline is composed of independent jobs that run scripts, grouped into stages.
-# Stages run in sequential order, but jobs within stages run in parallel.
+# Прежняя версия файла была шаблоном-заглушкой из документации GitLab:
+# job'ы build/test/deploy печатали echo и спали `sleep 60`, изображая
+# 90% покрытия тестами, а job `plan` переприсваивал переменные сам себе
+# (export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID) без всякого эффекта.
 #
-# For more information, see: https://docs.gitlab.com/ee/ci/yaml/index.html#stages
+# Здесь остались только те шаги, которые действительно что-то проверяют.
+# Деплой сайта живёт в .github/workflows/main.yml — дублировать его тут
+# незачем.
 #
-# You can copy and paste this template into a new `.gitlab-ci.yml` file.
-# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.
-#
-# To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
-# This specific template is located at:
-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Getting-Started.gitlab-ci.yml
-
-include:
-  template: Terraform.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform-Module.gitlab-ci.yml
-
-stages:          # List of stages for jobs, and their order of execution
-  - validate
-  - test
-  - build
-  - deploy
-  - cleanup
+# Требуются CI/CD-переменные проекта (Settings → CI/CD → Variables):
+#   AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY  — protected + masked
+#---------------------------------------------------------------------
+image:
+  name: hashicorp/terraform:1.15
+  entrypoint: [""]
 
 variables:
-  TF_ROOT: "envs/dev"
+  TF_ROOT: "${CI_PROJECT_DIR}/envs/dev"
+  TF_IN_AUTOMATION: "true"
+  AWS_DEFAULT_REGION: "us-east-2"
+
+cache:
+  key: "${CI_COMMIT_REF_SLUG}"
+  paths:
+    - ${TF_ROOT}/.terraform
+
+stages:
+  - validate
+  - plan
+
+# Форматирование проверяем на всём дереве: модули в envs/modules тоже
+# должны быть отформатированы.
+fmt:
+  stage: validate
+  script:
+    - terraform fmt -recursive -check -diff envs/
+  # Расхождение в форматировании не повод блокировать пайплайн.
+  allow_failure: true
+
+validate:
+  stage: validate
+  script:
+    - cd "${TF_ROOT}"
+    # -backend=false: валидация синтаксиса не требует доступа к state,
+    # значит job не нужны креденшелы и он не берёт блокировку.
+    - terraform init -backend=false -input=false
+    - terraform validate
 
 plan:
-  stage: build
+  stage: plan
   script:
-    - export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-    - export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-    - export AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
-    - gitlab-terraform init
-    - gitlab-terraform plan
-
-build-job:       # This job runs in the build stage, which runs first.
-  stage: build
-  script:
-    - echo "Compiling the code..."
-    - echo "Compile complete."
-
-unit-test-job:   # This job runs in the test stage.
-  stage: test    # It only starts when the job in the build stage completes successfully.
-  script:
-    - echo "Running unit tests... This will take about 60 seconds."
-    - sleep 60
-    - echo "Code coverage is 90%"
-    - echo "${CI_REPOSITORY_URL}"
-
-lint-test-job:   # This job also runs in the test stage.
-  stage: test    # It can run at the same time as unit-test-job (in parallel).
-  script:
-    - echo "Linting code... This will take about 10 seconds."
-    - sleep 10
-    - echo "No lint issues found."
-
-deploy-job:      # This job runs in the deploy stage.
-  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
-  environment: production
-  script:
-    - echo "Deploying application..."
-    - echo "Application successfully deployed."
+    - cd "${TF_ROOT}"
+    - terraform init -input=false
+    - terraform workspace select dev || terraform workspace new dev
+    - terraform plan -input=false -var-file=inputs.dev.tfvars.json -out=tfplan
+    - terraform show -no-color tfplan > tfplan.txt
+  artifacts:
+    paths:
+      - ${TF_ROOT}/tfplan.txt
+    expire_in: 1 week
+  rules:
+    # plan берёт блокировку state, поэтому запускаем его осознанно, а не
+    # на каждый пуш в любую ветку.
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - when: manual
+      allow_failure: true

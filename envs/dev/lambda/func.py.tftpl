@@ -1,0 +1,55 @@
+"""HTTP-эндпоинт за Lambda Function URL: отдаёт текущее число просмотров.
+
+Файл генерируется Terraform из func.py.tftpl.
+
+Инкремент делает func-cfle.py на стороне CloudFront; эта функция только
+читает. Раньше она пыталась делать и то и другое, но обе мутирующие строки
+были закомментированы, а при отсутствии записи возвращала жёсткое views=1.
+
+CORS-заголовки выставляет сам Function URL (блок cors в lambda.tf),
+дублировать их в коде не нужно.
+"""
+
+import json
+import logging
+
+import boto3
+from botocore.config import Config
+
+logger = logging.getLogger()
+logger.setLevel(logging.WARNING)
+
+TABLE_NAME = "${table_name}"
+TABLE_REGION = "${table_region}"
+
+_table = boto3.resource(
+    "dynamodb",
+    region_name=TABLE_REGION,
+    config=Config(
+        connect_timeout=1,
+        read_timeout=2,
+        retries={"max_attempts": 2, "mode": "standard"},
+    ),
+).Table(TABLE_NAME)
+
+
+def _response(status, body):
+    return {
+        "statusCode": status,
+        "headers": {
+            "Content-Type": "application/json",
+            # Счётчик меняется постоянно — кэшировать ответ нельзя.
+            "Cache-Control": "no-store",
+        },
+        "body": json.dumps(body),
+    }
+
+
+def handler(event, context):
+    try:
+        item = _table.get_item(Key={"id": "total"}).get("Item") or {}
+    except Exception:
+        logger.exception("failed to read view counter")
+        return _response(503, {"error": "counter unavailable"})
+
+    return _response(200, {"views": int(item.get("views", 0))})

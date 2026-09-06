@@ -1,12 +1,12 @@
-## Provides a Route53 query logging configuration resource
-resource "aws_route53_query_log" "route53" {
-  zone_id = data.aws_route53_zone.this.zone_id
-
-  cloudwatch_log_group_arn = aws_cloudwatch_log_group.route53.arn
-}
-## Create CloudWatch log group for Route 53
-resource "aws_cloudwatch_log_group" "route53" {
-  provider          = aws.us-east-1
-  name              = "/aws/route53/${data.aws_route53_zone.this.name}"
-  retention_in_days = 30
-}
+/**
+ * Route 53 query logging отключён.
+ *
+ * Логирование DNS-запросов персонального сайта в CloudWatch не даёт ничего,
+ * кроме расхода на ingestion ($0.50/ГБ): к сентябрю 2026 в группе
+ * /aws/route53/ailves2009.com накопилось 3.7 МБ записей, которые никто
+ * не читал. Если понадобится расследование — включается за минуту.
+ *
+ * Удалено:
+ *   resource "aws_route53_query_log" "route53"
+ *   resource "aws_cloudwatch_log_group" "route53"
+ */

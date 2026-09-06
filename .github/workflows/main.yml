@@ -1,57 +1,80 @@
 #---------------------------------------------------------------------
-# GitHub Action Workflow to Deploy AWS-CLOUD-RESUME-AILVES App to AWS S3
+# Публикация сайта AWS-CLOUD-RESUME-AILVES в S3 + сброс кэша CloudFront
 #
 # Version      Date        Info
 # 1.0          2024        Initial Version
+# 2.0          2026-09     OIDC вместо статических ключей, инвалидация
+#                          CloudFront, --delete, обновлённые actions
 #
 # Made by Aleksandr Ilves Copyleft (c) 2024
 #---------------------------------------------------------------------
-  name: CI-CD-Pipeline-to-AWS-S3
-  env:
-    EB_PACKAGE_S3_BUCKET_NAME : "aws-cloud-resume-ailves-dev-source"
-    EB_APPLICATION_NAME       : "ailves-common-infra"
-    EB_ENVIRONMENT_NAME       : "ailves-common-infra-env"
-    DEPLOY_PACKAGE_NAME       : "aws-cloud-resume-ailves_${{ github.sha }}.zip"
-    AWS_REGION_NAME           : "us-east-2"
-  
-  on: 
-    push:
-      branches: 
-        - master
-  
-  jobs:
-    my_ci_part:
-      runs-on: ubuntu-latest
-  
-      steps:
+name: CI-CD-Pipeline-to-AWS-S3
+
+env:
+  S3_BUCKET_NAME: "aws-cloud-resume-ailves-dev-source"
+  CLOUDFRONT_DISTRIBUTION_ID: "EGALS685DA92T"
+  AWS_REGION_NAME: "us-east-2"
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+# Роль берётся через OIDC (см. envs/dev/github_oidc.tf), поэтому job'у
+# нужен id-token. Прежде здесь использовались AWS_ACCESS_KEY / AWS_SECRET_KEY
+# пользователя github-actions с ключом от 2022 года.
+permissions:
+  contents: read
+  id-token: write
+
+# Два пуша подряд в master не должны наперегонки синхронизировать бакет.
+concurrency:
+  group: deploy-website
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Git clone our repo
-        uses: actions/checkout@v3
-  
-      # Setup Git LFS and pull the LFS files
-      # - name: Setup Git LFS
-      #   run: |
-      #     git lfs install
-      #     git lfs pull
-  
-      # Commented out: Create ZIP deployment package
-      #- name: Create ZIP deployment package
-      #  run: |
-      #    cd website
-      #    zip -r ../${{ env.DEPLOY_PACKAGE_NAME }} * -x *.git*
-  
-      - name: Configure my AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: actions/checkout@v4
         with:
-          aws-access-key-id    :  ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key:  ${{ secrets.AWS_SECRET_KEY }}
-          aws-region           :  ${{ env.AWS_REGION_NAME }}
-  
+          # Видео-резюме хранится в Git LFS, но в S3 больше не выкладывается,
+          # поэтому LFS-объекты качать не нужно.
+          lfs: false
+
+      - name: Configure my AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION_NAME }}
+
       - name: Sync website directory to S3 bucket
-        # Commented out: --delete option
-        # run: aws s3 sync website/ s3://${{ env.EB_PACKAGE_S3_BUCKET_NAME }}/ --delete
-        # run: aws s3 sync website/ s3://${{ env.EB_PACKAGE_S3_BUCKET_NAME }}/
-        run: aws s3 sync website/ s3://${{ env.EB_PACKAGE_S3_BUCKET_NAME }}/ --exclude "assets/Alexander_Ilves_Video_CV.mp4"
-  
+        # --delete убирает из бакета то, чего уже нет в репозитории. Без него
+        # там годами лежали устаревшие копии — в частности вторая версия CV
+        # ("Aleksandr Ilves_CV_EuroPass.pdf" с пробелом), на которую и вела
+        # кнопка Download CV.
+        run: |
+          aws s3 sync website/ "s3://${S3_BUCKET_NAME}/" \
+            --delete \
+            --exclude ".DS_Store" \
+            --exclude "*/.DS_Store" \
+            --exclude "assets/Alexander_Ilves_Video_CV.mp4"
+
+      - name: Invalidate CloudFront cache
+        # default_ttl дистрибуции — 3600 с, max_ttl — 86400 с. Без сброса
+        # кэша посетители видели бы старую страницу до суток.
+        run: |
+          invalidation_id=$(aws cloudfront create-invalidation \
+            --distribution-id "${CLOUDFRONT_DISTRIBUTION_ID}" \
+            --paths "/*" \
+            --query 'Invalidation.Id' --output text)
+          echo "Waiting for invalidation ${invalidation_id}"
+          aws cloudfront wait invalidation-completed \
+            --distribution-id "${CLOUDFRONT_DISTRIBUTION_ID}" \
+            --id "${invalidation_id}"
+
       - name: Print Happy Message for CI finish
-        run : echo "CI Pipeline part Finished successfully!"
-        
+        run: echo "CI Pipeline part Finished successfully!"

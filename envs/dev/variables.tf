@@ -39,6 +39,11 @@ variable "domain_name" {
   description = "DNS Domain name"
   type        = string
 }
+variable "admin_name" {
+  description = "Administrator account name published to SSM Parameter Store"
+  type        = string
+  default     = "admin"
+}
 /* end inputs.tfvars */
 /* vars for S3 Bucket */
 variable "s3_force_destroy" {
