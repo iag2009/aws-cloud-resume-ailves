@@ -1,10 +1,10 @@
 #---------------------------------------------------------------------
-# Публикация сайта AWS-CLOUD-RESUME-AILVES в S3 + сброс кэша CloudFront
+# Publish the AWS-CLOUD-RESUME-AILVES site to S3 and invalidate CloudFront
 #
 # Version      Date        Info
 # 1.0          2024        Initial Version
-# 2.0          2026-09     OIDC вместо статических ключей, инвалидация
-#                          CloudFront, --delete, обновлённые actions
+# 2.0          2026-09     OIDC instead of static keys, CloudFront
+#                          invalidation, --delete, updated actions
 #
 # Made by Aleksandr Ilves Copyleft (c) 2024
 #---------------------------------------------------------------------
@@ -21,14 +21,14 @@ on:
       - master
   workflow_dispatch:
 
-# Роль берётся через OIDC (см. envs/dev/github_oidc.tf), поэтому job'у
-# нужен id-token. Прежде здесь использовались AWS_ACCESS_KEY / AWS_SECRET_KEY
-# пользователя github-actions с ключом от 2022 года.
+# The role is assumed via OIDC (see envs/dev/github_oidc.tf), so the job needs
+# an id-token. This previously used AWS_ACCESS_KEY / AWS_SECRET_KEY of the
+# github-actions user, whose key dates from 2022.
 permissions:
   contents: read
   id-token: write
 
-# Два пуша подряд в master не должны наперегонки синхронизировать бакет.
+# Two pushes to master in a row must not race each other syncing the bucket.
 concurrency:
   group: deploy-website
   cancel-in-progress: false
@@ -41,8 +41,8 @@ jobs:
       - name: Git clone our repo
         uses: actions/checkout@v4
         with:
-          # Видео-резюме хранится в Git LFS, но в S3 больше не выкладывается,
-          # поэтому LFS-объекты качать не нужно.
+          # The video CV lives in Git LFS but is no longer published to S3,
+          # so there is no need to download LFS objects.
           lfs: false
 
       - name: Configure my AWS Credentials
@@ -52,10 +52,10 @@ jobs:
           aws-region: ${{ env.AWS_REGION_NAME }}
 
       - name: Sync website directory to S3 bucket
-        # --delete убирает из бакета то, чего уже нет в репозитории. Без него
-        # там годами лежали устаревшие копии — в частности вторая версия CV
-        # ("Aleksandr Ilves_CV_EuroPass.pdf" с пробелом), на которую и вела
-        # кнопка Download CV.
+        # --delete removes objects no longer present in the repository. Without
+        # it, stale copies lingered for years — notably a second CV file
+        # ("Aleksandr Ilves_CV_EuroPass.pdf", with a space) that the
+        # Download CV button actually pointed at.
         run: |
           aws s3 sync website/ "s3://${S3_BUCKET_NAME}/" \
             --delete \
@@ -64,8 +64,8 @@ jobs:
             --exclude "assets/Alexander_Ilves_Video_CV.mp4"
 
       - name: Invalidate CloudFront cache
-        # default_ttl дистрибуции — 3600 с, max_ttl — 86400 с. Без сброса
-        # кэша посетители видели бы старую страницу до суток.
+        # The distribution's default_ttl is 3600s and max_ttl is 86400s.
+        # Without an invalidation, visitors would see a stale page for up to a day.
         run: |
           invalidation_id=$(aws cloudfront create-invalidation \
             --distribution-id "${CLOUDFRONT_DISTRIBUTION_ID}" \

@@ -1,7 +1,7 @@
 locals {
   dynamodb_table_name = aws_dynamodb_table.this.name
 
-  # Домены, которым разрешено дёргать Function URL из браузера.
+  # Origins allowed to call the Function URL from a browser.
   counter_allowed_origins = [
     "https://${var.domain_name}",
     "https://cv.${var.domain_name}",
@@ -9,11 +9,14 @@ locals {
 }
 
 ################################################################################
-# Read-only счётчик за Lambda Function URL (регион var.aws_region)
+# View counter behind a Lambda Function URL (in var.aws_region)
+#
+# GET returns the count, POST increments it and returns the new value. The page
+# POSTs once per browser session (website/index.js).
 ################################################################################
 
-## Имя таблицы и её регион подставляются из Terraform, а не хардкодятся
-## в Python: раньше переименование var.project молча ломало обе функции.
+## The table name and region are injected by Terraform rather than hardcoded
+## in Python: renaming var.project used to break both functions silently.
 data "archive_file" "zip_the_python_code" {
   type        = "zip"
   output_path = "${path.module}/lambda/func.zip"
@@ -33,9 +36,14 @@ resource "aws_lambda_function" "this" {
   function_name    = "update_dynamodb_counter"
   role             = aws_iam_role.iam_for_lambda.arn
   handler          = "func.handler"
-  runtime          = "python3.13" # python3.8 снят с поддержки, AWS блокирует обновление таких функций
+  runtime          = "python3.13" # python3.8 is deprecated; AWS blocks updates to such functions
   memory_size      = 128
   timeout          = 5
+
+  # The URL is public and POST writes to DynamoDB. Two concurrent executions
+  # (~40 req/s at this function's latency) are plenty for a CV page and cap
+  # what a script hammering the URL can cost. Excess requests get HTTP 429.
+  reserved_concurrent_executions = 2
 }
 
 resource "aws_cloudwatch_log_group" "this" {
@@ -43,21 +51,21 @@ resource "aws_cloudwatch_log_group" "this" {
   retention_in_days = 14
 }
 
-## Публичный URL функции. Авторизации нет намеренно — эндпоинт read-only и
-## отдаёт число, которое и так видно на странице.
+## Public function URL. Authorization is intentionally absent: the endpoint only
+## reads and bumps a vanity counter, and reserved concurrency caps abuse.
 resource "aws_lambda_function_url" "this" {
   function_name      = aws_lambda_function.this.function_name
   authorization_type = "NONE"
 
   cors {
-    # allow_credentials = true вместе с allow_origins = ["*"] браузер
-    # отвергает, а куки этому эндпоинту не нужны.
+    # Browsers reject allow_credentials = true combined with
+    # allow_origins = ["*"], and this endpoint has no use for cookies.
     allow_credentials = false
     allow_origins     = local.counter_allowed_origins
-    allow_methods     = ["GET"]
-    # Раньше здесь были "date" и "keep-alive" — это forbidden headers,
-    # JS их выставить не может, а простой GET дополнительных заголовков
-    # не шлёт, поэтому allow_headers не задаём вовсе.
+    allow_methods     = ["GET", "POST"]
+    # This used to list "date" and "keep-alive", which are forbidden headers
+    # that JavaScript cannot set. A body-less GET or POST without custom
+    # headers is a CORS "simple request", so allow_headers is omitted.
     max_age = 86400
   }
 }
@@ -76,7 +84,10 @@ resource "aws_iam_role" "iam_for_lambda" {
         Effect = "Allow"
         Action = "sts:AssumeRole"
         Principal = {
-          # edgelambda.amazonaws.com обязателен для Lambda@Edge
+          # edgelambda.amazonaws.com is required for Lambda@Edge
+          # TODO(stage 4b): drop edgelambda once the old Lambda@Edge function is
+          # deleted. Its replicas may still run with this role until CloudFront
+          # finishes deploying the distribution without the trigger.
           Service = ["lambda.amazonaws.com", "edgelambda.amazonaws.com"]
         }
       },
@@ -99,8 +110,8 @@ resource "aws_iam_policy" "iam_policy_for_resume_project" {
           "logs:CreateLogStream",
           "logs:PutLogEvents",
         ]
-        # Lambda@Edge пишет логи в регион ближайшей точки присутствия,
-        # поэтому регион здесь не сужаем.
+        # Lambda@Edge writes logs in the region of the nearest edge location,
+        # so the region is left as a wildcard.
         Resource = [
           "arn:${data.aws_partition.current.partition}:logs:*:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/*",
           "arn:${data.aws_partition.current.partition}:logs:*:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/*:log-stream:*",
@@ -108,7 +119,7 @@ resource "aws_iam_policy" "iam_policy_for_resume_project" {
       },
       {
         Effect = "Allow"
-        # PutItem убран: счётчик инкрементится атомарным UpdateItem.
+        # PutItem is gone: the counter is incremented with an atomic UpdateItem.
         Action = [
           "dynamodb:UpdateItem",
           "dynamodb:GetItem",
@@ -125,51 +136,28 @@ resource "aws_iam_role_policy_attachment" "attach_iam_policy_to_iam_role" {
 }
 
 ################################################################################
-# Lambda@Edge — инкремент счётчика (обязан жить в us-east-1)
+# Former Lambda@Edge counter (update_dynamodb_counter_cfle, us-east-1)
+#
+# It ran on EVERY viewer request — every asset, every cache hit — to bump the
+# counter, on python3.8. The increment moved into the Function URL above.
+#
+# Terraform cannot delete it in the same apply that detaches it from
+# CloudFront: Lambda refuses to delete a function until its edge replicas are
+# gone, which takes from minutes to a few hours. So the function is only
+# forgotten here, and scripts/stage4-remove-lambda-edge.sh deletes it (with all
+# versions and per-region log groups) afterwards.
 ################################################################################
 
-data "archive_file" "zip_the_python_code_cfle" {
-  type        = "zip"
-  output_path = "${path.module}/lambda/func-cfle.zip"
-
-  source {
-    filename = "func-cfle.py"
-    content = templatefile("${path.module}/lambda/func-cfle.py.tftpl", {
-      table_name   = local.dynamodb_table_name
-      table_region = var.aws_region
-    })
+removed {
+  from = aws_lambda_function.cfle
+  lifecycle {
+    destroy = false
   }
 }
 
-resource "aws_lambda_function" "cfle" {
-  provider         = aws.us-east-1
-  filename         = data.archive_file.zip_the_python_code_cfle.output_path
-  source_code_hash = data.archive_file.zip_the_python_code_cfle.output_base64sha256
-  function_name    = "update_dynamodb_counter_cfle"
-  role             = aws_iam_role.iam_for_lambda.arn
-  handler          = "func-cfle.handler"
-  runtime          = "python3.13"
-  memory_size      = 128
-  # Вызов DynamoDB кросс-регионально; в коде таймауты жёстче этого значения.
-  timeout = 5
-  # Lambda@Edge принимает только пронумерованную версию, не $LATEST.
-  publish = true
+removed {
+  from = aws_lambda_permission.cfle
+  lifecycle {
+    destroy = false
+  }
 }
-
-resource "aws_lambda_permission" "cfle" {
-  provider      = aws.us-east-1
-  statement_id  = "AllowExecutionFromCloudFront"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.cfle.function_name
-  principal     = "edgelambda.amazonaws.com"
-  qualifier     = aws_lambda_function.cfle.version
-}
-
-## Log group для Lambda@Edge здесь намеренно НЕ создаётся.
-##
-## Раньше тут был aws_cloudwatch_log_group с именем
-## /aws/lambda/update_dynamodb_counter_cfle и retention 14 дней. Эта группа
-## всегда оставалась пустой: Lambda@Edge пишет в /aws/lambda/us-east-1.<имя>
-## в каждом edge-регионе, где выполнялась функция. Terraform не может знать
-## этот список заранее, поэтому retention проставляется скриптом
-## scripts/stage0-cleanup-orphans.sh (раздел 4).

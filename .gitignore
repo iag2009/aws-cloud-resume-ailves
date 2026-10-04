@@ -1,14 +1,19 @@
 .DS_Store
 
-# Опечатка "assetss" (три s) означала, что правило никогда не срабатывало,
-# и видео-резюме на 246 МБ уехало в репозиторий: .git весит 498 МБ.
+# A typo ("assetss", three s) meant this rule never matched, so the 246 MB
+# video CV ended up in the repository: .git weighs 498 MB.
 website/assets/*.mp4
 
-# Артефакты сборки Lambda: .zip генерируется data.archive_file из
-# envs/dev/lambda/*.py.tftpl, коммитить его не нужно.
+# Lambda build artifacts: the .zip is produced by data.archive_file from
+# envs/dev/lambda/*.py.tftpl and does not belong in version control.
 envs/*/lambda/*.zip
 
 envs/tst/**
 envs/dev/outputfile.txt
 envs/dev/payload.json
 envs/dev/payload_base64.txt
+
+# Saved plans embed values from state; local command logs.
+tfplan
+*.tfplan
+out.txt

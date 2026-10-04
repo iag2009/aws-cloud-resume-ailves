@@ -1,4 +1,9 @@
-@import url('https://fonts.googleapis.com/css?family=Oswald|Rambla|Staatliches&display=swap');
+/* Google Fonts are linked from index.html: an @import here would only start
+   downloading them after this file had arrived. */
+
+html{
+    scroll-behavior: smooth;
+}
 
 body{
     margin: 0;
@@ -49,26 +54,32 @@ body{
 
 /* #global classes */
 
+/*
+ * Navigation.
+ * Desktop: a fixed sidebar exactly as wide as .offset-md-3 in <main>.
+ * It used to be a full-width element with a col-3 inside: an invisible layer
+ * over the first screen. Only Swiper's transform on .swiper-wrapper kept it
+ * from covering everything (a transformed ancestor turns position: fixed
+ * into scroll-along). With Swiper gone it must be exactly sidebar-wide.
+ * Mobile: an ordinary block on top of the page. There used to be a
+ * position: fixed full-screen purple menu that covered the content with no
+ * way to close it.
+ */
 #header {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%; /* Set width to 100% for all screens */
-    z-index: 1;
-    transition: left 0.5s ease;
-    overflow: hidden; /* Change overflow to hidden */
-}
-
-#wrapper {
-    overflow: auto; /* добавьте overflow: auto; для контейнера #wrapper */
-}
-
-#header nav{
+    width: 25%;
     height: 100vh;
+    overflow-y: auto;
+    z-index: 1;
 }
-#header .site-title .navbar-brand{
-    letter-spacing: 2px;
-    color: var(--color-white);
+
+#header .site-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem 20px;
 }
 
 #header .nav-link{
@@ -77,22 +88,51 @@ body{
     text-transform: uppercase;
 }
 
-#header .nav-link:hover{
+#header .nav-link:hover,
+#header .nav-link:focus{
     color: var(--color-white) !important;
 }
 
-#header .toggle-button{
-    background: none;
-    color: var(--color-black);
-    position: fixed;
-    top: 25px;
-    right: 20px;
-    border: 1px solid var(--color-border);
+.primary-nav .site-title .author-photo{
+    width: 240px;
+    max-width: 100%;
+    height: 240px;
+    background: url(./assets/Aleksandr_Ilves_Photo.png) no-repeat;
+    background-size: 110%;
+    background-position: 40% 0;
 }
 
-.toggle-left{
-    left: 0 !important;
-    width: 1000px !important;
+@media (max-width: 767.98px) {
+    #header {
+        position: static;
+        width: 100%;
+        height: auto;
+    }
+
+    #header .site-title {
+        padding: 1.5rem 0 .5rem;
+    }
+
+    .primary-nav .site-title .author-photo{
+        width: 120px;
+        height: 120px;
+        background-size: cover;
+        background-position: center;
+        border-radius: 50%;
+    }
+
+    #header .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding-bottom: .75rem;
+    }
+
+    #header .nav-link {
+        margin: .25rem .5rem;
+        padding: .25rem .5rem;
+        border-bottom: none;
+    }
 }
 
 /* site-main */
@@ -113,27 +153,17 @@ body{
     transform: translate(-50%, -50%);
 }
 
-.site-banner .banner-area .author .author-img{
-    width: 240px;
-    height: 240px;
-    background: url(./assets/avatar-alt.png) no-repeat;
-    background-size: 110%;
-    background-position: 40% 0;
-}
+@media (max-width: 767.98px) {
+    .site-banner .banner-area {
+        height: auto;
+        padding: 3rem 1rem;
+    }
 
-.primary-nav .site-title {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-}
-
-.primary-nav .site-title .author-photo{
-    width: 240px;
-    height: 240px;
-    background: url(./assets/Alexander_Ilves_Photo-removebg.png) no-repeat;
-    background-size: 110%;
-    background-position: 40% 0;
+    .site-banner .banner-area .author {
+        position: static;
+        transform: none;
+        text-align: center !important;
+    }
 }
 
 .skill .bars p, .site-content .skill .bars span{
@@ -149,73 +179,22 @@ body{
     padding: 1.5rem 1rem;
 }
 
-@media screen and (min-width: 768px) {
-    #header {
-        left: 0; /* Ensure that the header is at the left edge */
-    }
-}
-
-/* Chat GPT added */
-@media only screen and (max-width: 767px) {
-    /* Скрываем кнопку Toggle при больших экранах
-    .toggle-button {
-        display: block;
-    } */
-
-    /* Стили для навигации на мобильных устройствах */
-    .primary-nav {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: #800080;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        z-index: 2;
-        overflow-y: auto;
-        max-height: 100vh;
-    }
-
-    .primary-nav.show {
-        /* display: flex; */
-    }
-
-    .primary-nav a {
-        /* margin: 10px; */
-        color: #fff;
-        margin: 10px;
-        text-decoration: none;
-        font-size: 16px;
-        text-transform: uppercase;
-    }
-
-    /* Добавленные стили для сайт-баннера на мобильных устройствах */
-    .site-banner .banner-area .author {
-        text-align: center;
-        top: 30%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-
-    .site-banner .banner-area .author .author-img,
-    .primary-nav .site-title .author-photo {
-        width: 120px;
-        height: 120px;
-        background-size: cover;
-        background-position: center;
-        border-radius: 50%;
-        margin: 0 auto 10px;
-    }
-}
-/* End Chat GPT added */
-
 #typed{
     color: var(--color-blue);
 }
 .typed-blue{
     color: var(--color-blue);
+}
+
+/* typed.js cursor; the library is told not to inject this itself (CSP). */
+.typed-cursor{
+    opacity: 1;
+}
+.typed-cursor.typed-cursor--blink{
+    animation: typedjsBlink 0.7s infinite;
+}
+@keyframes typedjsBlink{
+    50% { opacity: 0; }
 }
 /* #site-main */
 
@@ -298,6 +277,67 @@ body{
     color: var(--color-white);
 }
 
-.swiper-container {
-    -webkit-overflow-scrolling: touch;
-  }
+/* Experience */
+.experience .job {
+    padding: 0 0 1.25rem 1.25rem;
+    margin-bottom: 1.25rem;
+    border-left: 3px solid var(--color-blue);
+}
+.experience .job:last-child {
+    margin-bottom: 0;
+}
+.experience .job-meta {
+    font-weight: normal;
+    font-size: 15px;
+}
+
+/* Skills: one row per group, items as chips */
+.skill-groups {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: .75rem 1.5rem;
+    margin: 0;
+}
+.skill-groups dt {
+    font: normal 400 16px var(--font-os);
+    text-transform: uppercase;
+    color: #6c757d;
+    padding-top: .3rem;
+}
+.skill-groups dd {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+    margin: 0;
+}
+.skill-groups dd span {
+    padding: .2rem .7rem;
+    border: 1px solid var(--color-blue);
+    border-radius: 1rem;
+    font-size: 15px;
+}
+@media (max-width: 575.98px) {
+    .skill-groups {
+        grid-template-columns: 1fr;
+        gap: .25rem;
+    }
+    .skill-groups dd {
+        margin-bottom: .75rem;
+    }
+}
+
+/* Project cards */
+.project-card {
+    height: 100%;
+    padding: 1.25rem 1.5rem;
+    background: var(--color-white);
+    border-top: 3px solid var(--color-blue);
+}
+.project-card a {
+    color: inherit;
+}
+.project-card a:hover {
+    color: var(--color-blue);
+    text-decoration: none;
+}
+

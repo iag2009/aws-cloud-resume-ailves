@@ -47,6 +47,64 @@ data "aws_route53_zone" "this" {
   name         = var.domain_name
   private_zone = false
 }
+/** AWS-managed cache policy: TTLs from Cache-Control, gzip + brotli keys **/
+data "aws_cloudfront_cache_policy" "caching_optimized" {
+  name = "Managed-CachingOptimized"
+}
+
+locals {
+  /**
+   * Every origin the page loads from. Third-party styles in index.html carry
+   * SRI hashes; a new CDN there needs a matching entry here, otherwise the
+   * browser refuses it. There are no third-party scripts at all.
+   * typed.js is configured with autoInsertCss = false, so no inline styles.
+   **/
+  content_security_policy = join("; ", [
+    "default-src 'self'",
+    "script-src 'self'",
+    "style-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com",
+    "font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com",
+    "img-src 'self' data:",
+    "connect-src 'self' ${trimsuffix(aws_lambda_function_url.this.function_url, "/")}",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'none'",
+    "frame-ancestors 'none'",
+  ])
+}
+
+/** Security headers on every response **/
+resource "aws_cloudfront_response_headers_policy" "security" {
+  name    = "${var.project}-security-headers"
+  comment = "HSTS, CSP, nosniff, frame and referrer policy for ${var.domain_name}"
+
+  security_headers_config {
+    strict_transport_security {
+      access_control_max_age_sec = 31536000
+      # Deliberately no includeSubDomains/preload: they would bind every
+      # current and future subdomain of the zone to HTTPS for a year.
+      include_subdomains = false
+      preload            = false
+      override           = true
+    }
+    content_security_policy {
+      content_security_policy = local.content_security_policy
+      override                = true
+    }
+    content_type_options {
+      override = true
+    }
+    frame_options {
+      frame_option = "DENY"
+      override     = true
+    }
+    referrer_policy {
+      referrer_policy = "strict-origin-when-cross-origin"
+      override        = true
+    }
+  }
+}
+
 /** Create a cloudfront distribution **/
 resource "aws_cloudfront_distribution" "this" {
   origin {
@@ -62,27 +120,43 @@ resource "aws_cloudfront_distribution" "this" {
   comment             = "${var.project} distribution"
   default_root_object = "index.html"
 
+  /**
+   * Was: legacy forwarded_values with a 3600 s default TTL, compression off
+   * (HTML went out uncompressed, 17.8 KB) and a Lambda@Edge viewer-request
+   * trigger on every request just to count views. The counter now lives
+   * behind the Function URL (lambda.tf), so there is no edge function.
+   *
+   * CachingOptimized caches for a day by default; that is fine because the
+   * deploy workflow invalidates /* after every sync.
+   **/
   default_cache_behavior {
     target_origin_id       = "S3-${module.s3_bucket.s3_bucket_id}"
     viewer_protocol_policy = "redirect-to-https"
 
-    allowed_methods = ["GET", "HEAD", "OPTIONS"]
-    cached_methods  = ["GET", "HEAD", "OPTIONS"]
-    forwarded_values {
-      query_string = false
-      cookies {
-        forward = "none"
-      }
-    }
-    min_ttl     = 0
-    default_ttl = 3600
-    max_ttl     = 86400
+    allowed_methods = ["GET", "HEAD"]
+    cached_methods  = ["GET", "HEAD"]
+    compress        = true
 
-    lambda_function_association {
-      event_type   = "viewer-request"
-      lambda_arn   = "${aws_lambda_function.cfle.arn}:${aws_lambda_function.cfle.version}"
-      include_body = false #тело запроса не будет передано в функцию Lambda
-    }
+    cache_policy_id            = data.aws_cloudfront_cache_policy.caching_optimized.id
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.security.id
+  }
+
+  /**
+   * With OAC and no s3:ListBucket, S3 answers 403 for a missing key, and
+   * visitors used to see the raw <Error><Code>AccessDenied</Code> XML.
+   * Both codes now return website/404.html with an honest 404.
+   **/
+  custom_error_response {
+    error_code            = 403
+    response_code         = 404
+    response_page_path    = "/404.html"
+    error_caching_min_ttl = 300
+  }
+  custom_error_response {
+    error_code            = 404
+    response_code         = 404
+    response_page_path    = "/404.html"
+    error_caching_min_ttl = 300
   }
 
   restrictions {
@@ -132,14 +206,14 @@ resource "aws_route53_record" "root" {
   }
 }
 /***
- * DynamoDB Table for the page-view counter.
+ * DynamoDB table for the page-view counter.
  *
- * Было: PROVISIONED 20 RCU / 20 WCU + GSI на 10/10 = 30/30 при free tier
- * 25/25, что давало $3.48/мес на таблице из 45 записей общим объёмом 993 байта.
- * GSI "ViewsIndex" не читался ни из одной Lambda.
+ * Was: PROVISIONED 20 RCU / 20 WCU plus a GSI at 10/10, i.e. 30/30 against a
+ * free tier of 25/25. That cost $3.48/month for a table holding 45 items
+ * totalling 993 bytes, and no Lambda ever read the "ViewsIndex" GSI.
  *
- * Стало: PAY_PER_REQUEST. При текущем трафике это ~$0.00 и нет риска
- * троттлинга на всплеске.
+ * Now: PAY_PER_REQUEST. At current traffic that is ~$0.00, and a traffic
+ * spike can no longer be throttled.
  ***/
 resource "aws_dynamodb_table" "this" {
   name         = "${var.project}_pagecounter"

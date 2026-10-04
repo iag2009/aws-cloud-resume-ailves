@@ -1,23 +1,23 @@
 /**
- * Доступ GitHub Actions к AWS через OIDC.
+ * GitHub Actions access to AWS via OIDC.
  *
- * Заменяет статические ключи IAM-пользователя github-actions, лежащие в
- * секретах репозитория: ключ AKIARYXW3M6OW75KA6N6 выпущен 2022-02-12 и
- * ни разу не ротировался. OIDC выдаёт временные креденшелы на время job,
- * их нечего утекать и нечего ротировать.
+ * Replaces the static IAM user credentials kept in repository secrets: key
+ * AKIARYXW3M6OW75KA6N6 for user github-actions was issued on 2022-02-12 and
+ * has never been rotated. OIDC hands out temporary credentials scoped to a
+ * single job — nothing to leak and nothing to rotate.
  *
- * ПОРЯДОК ВНЕДРЕНИЯ:
- *   1. terraform apply в envs/dev  — создаст provider и роль
- *   2. взять из output github_actions_role_arn значение и положить его
- *      в GitHub → Settings → Secrets and variables → Actions → Variables
- *      как AWS_ROLE_ARN
- *   3. смёржить обновлённый .github/workflows/main.yml
- *   4. удалить ключ пользователя github-actions:
+ * ROLLOUT ORDER:
+ *   1. terraform apply in envs/dev — creates the provider and the role
+ *   2. take the github_actions_role_arn output and store it in
+ *      GitHub -> Settings -> Secrets and variables -> Actions -> Variables
+ *      as AWS_ROLE_ARN
+ *   3. merge the updated .github/workflows/main.yml
+ *   4. revoke the github-actions user key:
  *        aws iam delete-access-key --user-name github-actions \
  *          --access-key-id AKIARYXW3M6OW75KA6N6
- *      и секреты AWS_ACCESS_KEY / AWS_SECRET_KEY из репозитория
+ *      and remove the AWS_ACCESS_KEY / AWS_SECRET_KEY repository secrets
  *
- * IAM ничего не стоит, на счёт этот файл не влияет.
+ * IAM is free, so this file has no effect on the bill.
  */
 
 variable "github_repository" {
@@ -54,7 +54,7 @@ data "aws_iam_policy_document" "github_actions_assume" {
       values   = ["sts.amazonaws.com"]
     }
 
-    # Без этого условия роль сможет взять ЛЮБОЙ репозиторий на GitHub.
+    # Without this condition ANY repository on GitHub could assume the role.
     condition {
       test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
@@ -70,7 +70,7 @@ resource "aws_iam_role" "github_actions" {
 }
 
 data "aws_iam_policy_document" "github_actions_deploy" {
-  # Ровно то, что нужно пайплайну: синхронизировать сайт в бакет.
+  # Exactly what the pipeline needs: sync the site into the bucket.
   statement {
     effect    = "Allow"
     actions   = ["s3:ListBucket"]
@@ -87,7 +87,7 @@ data "aws_iam_policy_document" "github_actions_deploy" {
     resources = ["${module.s3_bucket.s3_bucket_arn}/*"]
   }
 
-  # ... и сбросить кэш CloudFront, иначе изменения не видны до суток.
+  # ... and invalidate CloudFront, otherwise changes take up to a day to show.
   statement {
     effect = "Allow"
     actions = [

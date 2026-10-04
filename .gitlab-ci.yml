@@ -1,16 +1,15 @@
 #---------------------------------------------------------------------
-# Проверка Terraform-конфигурации проекта.
+# Terraform configuration checks for this project.
 #
-# Прежняя версия файла была шаблоном-заглушкой из документации GitLab:
-# job'ы build/test/deploy печатали echo и спали `sleep 60`, изображая
-# 90% покрытия тестами, а job `plan` переприсваивал переменные сам себе
-# (export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID) без всякого эффекта.
+# The previous version of this file was the boilerplate template from the
+# GitLab docs: the build/test/deploy jobs echoed strings and ran `sleep 60`
+# while claiming 90% test coverage, and the `plan` job reassigned variables
+# to themselves (export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID) to no effect.
 #
-# Здесь остались только те шаги, которые действительно что-то проверяют.
-# Деплой сайта живёт в .github/workflows/main.yml — дублировать его тут
-# незачем.
+# What is left here are only the steps that actually check something. Site
+# deployment lives in .github/workflows/main.yml and is not duplicated.
 #
-# Требуются CI/CD-переменные проекта (Settings → CI/CD → Variables):
+# Required project CI/CD variables (Settings -> CI/CD -> Variables):
 #   AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY  — protected + masked
 #---------------------------------------------------------------------
 image:
@@ -31,21 +30,21 @@ stages:
   - validate
   - plan
 
-# Форматирование проверяем на всём дереве: модули в envs/modules тоже
-# должны быть отформатированы.
+# Formatting is checked across the whole tree: the modules under envs/modules
+# should be formatted too.
 fmt:
   stage: validate
   script:
     - terraform fmt -recursive -check -diff envs/
-  # Расхождение в форматировании не повод блокировать пайплайн.
+  # A formatting drift is no reason to block the pipeline.
   allow_failure: true
 
 validate:
   stage: validate
   script:
     - cd "${TF_ROOT}"
-    # -backend=false: валидация синтаксиса не требует доступа к state,
-    # значит job не нужны креденшелы и он не берёт блокировку.
+    # -backend=false: syntax validation needs no access to state, so this job
+    # needs no credentials and takes no lock.
     - terraform init -backend=false -input=false
     - terraform validate
 
@@ -54,7 +53,6 @@ plan:
   script:
     - cd "${TF_ROOT}"
     - terraform init -input=false
-    - terraform workspace select dev || terraform workspace new dev
     - terraform plan -input=false -var-file=inputs.dev.tfvars.json -out=tfplan
     - terraform show -no-color tfplan > tfplan.txt
   artifacts:
@@ -62,8 +60,8 @@ plan:
       - ${TF_ROOT}/tfplan.txt
     expire_in: 1 week
   rules:
-    # plan берёт блокировку state, поэтому запускаем его осознанно, а не
-    # на каждый пуш в любую ветку.
+    # A plan takes a state lock, so run it deliberately rather than on every
+    # push to every branch.
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - when: manual

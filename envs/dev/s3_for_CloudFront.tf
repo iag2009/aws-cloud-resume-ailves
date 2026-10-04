@@ -2,7 +2,7 @@ locals {
   bucket_name = "${var.project_long}-${var.environment}-source"
 }
 
-/** Source bucket for Static web site **/
+/** Source bucket for the static web site **/
 module "s3_bucket" {
   source        = "../modules/s3_bucket"
   bucket        = local.bucket_name
@@ -19,10 +19,10 @@ module "s3_bucket" {
   attach_policy = var.s3_attach_policy
 
   /**
-   * Versioning включён, но правил ротации не было: к сентябрю 2026 в бакете
-   * накопилось 213 версий на 3.6 ГБ при 11 актуальных объектах.
-   * Держим 3 предыдущие версии не дольше 30 дней и подчищаем
-   * незавершённые multipart-загрузки.
+   * Versioning was on with no rotation rule: by September 2026 the bucket held
+   * 213 versions totalling 3.6 GB behind 11 current objects.
+   * Keep three previous versions for at most 30 days and clean up incomplete
+   * multipart uploads.
    **/
   lifecycle_rule = [
     {

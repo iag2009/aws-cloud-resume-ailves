@@ -1,93 +1,73 @@
-$(document).ready(function (e) {
-    $win = $(window);
-    $navbar = $('#header');
-    $toggle = $('.toggle-button');
-    var width = $navbar.width();
-    toggle_onclick($win, $navbar, width);
+// Loaded with `defer`, so the DOM is ready and typed.min.js has already run.
+//
+// jQuery and Swiper are gone: jQuery 3.4.1 drove only the mobile menu toggle
+// (whose button no longer existed), and Swiper wrapped the page without a
+// single slide. Navigation is now pure CSS (style.css), smooth scrolling is
+// `scroll-behavior: smooth`.
 
-    // resize event
-    $win.resize(function () {
-        toggle_onclick($win, $navbar, width);
-    });
-
-    $toggle.click(function (e) {
-        $navbar.toggleClass("toggle-left");
-    })
-
+// autoInsertCss: false — typed.js would otherwise inject a <style> element,
+// which the Content-Security-Policy blocks. The cursor CSS lives in style.css.
+new Typed('#typed', {
+    strings: [
+        'Senior DevOps Engineer',
+        'Agentic Platform Engineer',
+        'Cloud Architect',
+        'Kubernetes & EKS Engineer',
+        'AWS Solutions Architect – Professional'
+    ],
+    typeSpeed: 50,
+    backSpeed: 30,
+    backDelay: 1500,
+    loop: true,
+    autoInsertCss: false
 });
 
-function toggle_onclick($win, $navbar, width) {
-    if ($win.width() <= 768) {
-        $navbar.css({ left: `-${width}px` });
-    } else {
-        $navbar.css({ left: '0px' });
+// View counter. The Lambda Function URL reads the count on GET and increments
+// it on POST (envs/dev/lambda/func.py.tftpl). The first page load of a browser
+// session counts the visit; reloads in the same session only read it.
+const COUNTER_API = "https://wwwzmykydj4ad2ki5axcp3luxi0altoz.lambda-url.us-east-2.on.aws/";
+const COUNTED_KEY = "viewCounted";
+
+// sessionStorage throws in some privacy modes; then every load counts.
+function alreadyCounted() {
+    try {
+        return sessionStorage.getItem(COUNTED_KEY) === "1";
+    } catch (e) {
+        return false;
     }
 }
 
-var typed = new Typed('#typed', {
-    strings: [
-        'Cloud Engineer',
-        'Cloud Architect',
-        'DevOps Engineer',
-        'AWS SAP, MCSE, VCP'
-    ],
-    typeSpeed: 50,
-    backSpeed: 50,
-    loop: true
-});
-
-var typed_2 = new Typed('#typed_2', {
-    strings: [
-        '&nbsp;Cloud Engineer',
-        '&nbsp;Cloud Architect',
-        '&nbsp;DevOps Engineer'
-    ],
-    typeSpeed: 50,
-    backSpeed: 50,
-    loop: true
-});
-
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth'
-        });
-    });
-});
-
-// Элемент счётчика сейчас закомментирован в index.html, поэтому querySelector
-// возвращает null и старый код падал с TypeError на каждой загрузке страницы.
-const counter = document.querySelector(".counter-number");
-
-const COUNTER_API = "https://wwwzmykydj4ad2ki5axcp3luxi0altoz.lambda-url.us-east-2.on.aws/";
+function markCounted() {
+    try {
+        sessionStorage.setItem(COUNTED_KEY, "1");
+    } catch (e) {
+        // nothing to do
+    }
+}
 
 async function updateCounter() {
-    if (!counter) {
+    const counter = document.querySelector(".counter-number");
+    const value = document.getElementById("counterValue");
+    if (!counter || !value) {
         return;
     }
+
+    const count = !alreadyCounted();
     try {
-        const response = await fetch(COUNTER_API);
+        const response = await fetch(COUNTER_API, { method: count ? "POST" : "GET" });
         if (!response.ok) {
             throw new Error(`counter API returned ${response.status}`);
         }
         const data = await response.json();
-        counter.textContent = `👀 Views: ${data.views}`;
+        if (count) {
+            markCounted();
+        }
+        value.textContent = data.views;
     } catch (error) {
         console.error('Error:', error);
-        // Счётчик — украшение, а не контент: молча оставляем блок пустым.
+        // The counter is decoration, not content: hide it rather than show a
+        // placeholder forever.
+        counter.hidden = true;
     }
 }
 updateCounter();
-
-var mySwiper = new Swiper('.swiper-container', {
-    //direction: 'vertical', // прокручивание вертикально
-    //slidesPerView: 'auto', // автоматическое определение количества видимых слайдов
-    //freeMode: true, // включить свободный режим (плавное прокручивание)
-    //freeModeSticky: true, // make swiper stick to positions after you release it
-    //mousewheel: true, // включить прокрутку колесом мыши
-    //mousewheel: {
-    //    releaseOnEdges: true, // передать прокрутку мыши родительскому элементу, если достигнуты края слайдера
-    //},
-});

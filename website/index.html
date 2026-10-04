@@ -4,44 +4,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aleksandr Ilves</title>
+    <title>Aleksandr Ilves — Senior DevOps &amp; Agentic Platform Engineer | Cloud Architect</title>
+    <meta name="description" content="Senior DevOps &amp; Agentic Platform Engineer in Belgrade. AWS, Kubernetes (EKS), Internal Developer Platforms, Terraform and GitOps for mission-critical FinTech.">
+    <link rel="canonical" href="https://cv.ailves2009.com/">
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    <!-- Link previews (LinkedIn, Slack, Telegram, X) -->
+    <meta property="og:type" content="profile">
+    <meta property="og:url" content="https://cv.ailves2009.com/">
+    <meta property="og:title" content="Aleksandr Ilves — Senior DevOps &amp; Agentic Platform Engineer">
+    <meta property="og:description" content="AWS, Kubernetes (EKS), Internal Developer Platforms, Terraform and GitOps for mission-critical FinTech.">
+    <meta property="og:image" content="https://cv.ailves2009.com/assets/Aleksandr_Ilves_Photo.png">
+    <meta property="profile:first_name" content="Aleksandr">
+    <meta property="profile:last_name" content="Ilves">
+    <meta name="twitter:card" content="summary">
+
+    <!-- A JSON-LD data block is never executed, so script-src 'self' in the CSP
+         does not apply to it. -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Aleksandr Ilves",
+        "jobTitle": "Senior DevOps & Agentic Platform Engineer",
+        "url": "https://cv.ailves2009.com/",
+        "image": "https://cv.ailves2009.com/assets/Aleksandr_Ilves_Photo.png",
+        "address": {"@type": "PostalAddress", "addressLocality": "Belgrade", "addressCountry": "RS"},
+        "alumniOf": "Saint Petersburg Electrotechnical University \"LETI\"",
+        "knowsLanguage": ["ru", "en", "de"],
+        "sameAs": [
+            "https://www.linkedin.com/in/alexander-ilves-2009/",
+            "https://github.com/ailves2009",
+            "https://github.com/iag2009",
+            "https://gitlab.com/iag2009",
+            "https://medium.com/@alexanderilves"
+        ]
+    }
+    </script>
+
+    <!-- Third-party styles carry SRI hashes, and the CloudFront CSP allows
+         exactly these origins (envs/dev/cloudfront.tf). Adding a CDN here means
+         adding it to the CSP as well. -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha384-nRgPTkuX86pH8yjPJUAFuASXQSSl2/bBUiNV47vSYpKFxHJhbcrGnmlYpYJMeD7a" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald|Rambla|Staatliches&display=swap">
 
     <link rel="stylesheet" href="./style.css">
     <link rel="icon" type="image/png" href="/assets/favicon.png">
-    <link rel="stylesheet" href="https://unpkg.com/swiper@14.2.0/swiper-bundle.min.css" />
+
+    <script src="./vendor/typed/typed.min.js" defer></script>
+    <script src="./index.js" defer></script>
 </head>
 
 <body>
 
     <!-- header area -->
-    <div id="wrapper"></div>
-    <div class="swiper-container">
-        <div class="swiper-wrapper">
-    <header id="header">
-        <div class="row m-0">
-            <div class="col-3 bgcolor-black">
-                <nav class="primary-nav navbar-expand-md">
-                    <div class="site-title text-center text-light py-5">
-                        <div class="author-photo"></div>
-                    </div>
-                    <div class="d-flex flex-column">
-                        <a href="#home" class="nav-item nav-link text-white-50 font-os font-size-16 active">Home</a>
-                        <a href="#about_me"
-                            class="nav-item nav-link text-white-50 font-os font-size-16 active">About</a>
-                        <a href="#awards"
-                            class="nav-item nav-link text-white-50 font-os font-size-16 active">Achievements</a>
-                        <a href="#portfolio"
-                            class="nav-item nav-link text-white-50 font-os font-size-16 active">Portfolio</a>
-                        <a href="https://www.linkedin.com/in/alexander-ilves-2009/"
-                            class="nav-item nav-link text-white-50 font-os font-size-16 active" target="_blank">LinkedIn</a>
-                        <!-- div class="counter-number nav-item nav-link text-white-50 font-os font-size-16 active">Couldn't read the counter</div-->
-                    </div>
-                </nav>
+    <header id="header" class="bgcolor-black">
+        <nav class="primary-nav" aria-label="Main">
+            <div class="site-title text-center text-light">
+                <div class="author-photo" role="img" aria-label="Photo of Aleksandr Ilves"></div>
             </div>
-        </div>
+            <div class="nav-links">
+                <a href="#home" class="nav-link text-white-50 font-os font-size-16">Home</a>
+                <a href="#about_me" class="nav-link text-white-50 font-os font-size-16">About</a>
+                <a href="#experience" class="nav-link text-white-50 font-os font-size-16">Experience</a>
+                <a href="#skills" class="nav-link text-white-50 font-os font-size-16">Skills</a>
+                <a href="#portfolio" class="nav-link text-white-50 font-os font-size-16">Projects</a>
+                <a href="#awards" class="nav-link text-white-50 font-os font-size-16">Certifications</a>
+                <a href="https://www.linkedin.com/in/alexander-ilves-2009/"
+                    class="nav-link text-white-50 font-os font-size-16" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            </div>
+        </nav>
     </header>
     <!-- #header area -->
 
@@ -53,10 +89,11 @@
                 <section class="site-banner bg-light" id="home">
                     <div class="banner-area">
                         <div class="author text-left">
-                            <!-- div class="author-img"></div -->
                             <h1 class="text-black font-staat font-size-40 text-uppercase py-3">Aleksandr <span class="typed-blue">Ilves</span></h1>
-                            <h5 class="text-black font-ram font-size-20">Serbia, Belgrade, ailves2009@gmail.com</h1>
-                            <h5 class="text-black font-ram font-size-27">I'm a <span id="typed"></span></h5>
+                            <p class="text-black font-ram font-size-20 mb-2">Belgrade, Serbia ·
+                                <a href="mailto:ailves2009@gmail.com">ailves2009@gmail.com</a> ·
+                                <a href="https://www.linkedin.com/in/alexander-ilves-2009/" target="_blank" rel="noopener noreferrer">LinkedIn</a></p>
+                            <p class="text-black font-ram font-size-27">I'm a <span id="typed"></span></p>
                         </div>
                     </div>
                 </section>
@@ -66,189 +103,331 @@
                 <section class="about px-4 my-5" id="about_me">
                     <div class="me py-5">
                         <h5 class="text-uppercase font-os font-size-16 text-muted">information</h5>
-                        <h1 class="text-uppercase font-staat font-size-34">About Me</h1>
+                        <h2 class="text-uppercase font-staat font-size-34">About Me</h2>
                     </div>
                     <div class="row m-0">
                         <div class="col-sm-5 pl-0">
-                            <img src="./assets/banner.png" alt="profile image" class="img-fluid">
+                            <img src="./assets/banner.png" alt="" class="img-fluid">
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-7">
                             <h6 class="text-uppercase font-os font-size-16 text-muted">About Me</h6>
-                            <h5 class="font-ram font-size-20 py-2">I'm a&nbsp;<span id="typed_2"></span></h5>
+                            <p class="font-ram font-size-20 py-2">Senior DevOps &amp; Agentic Platform Engineer · Cloud Architect</p>
                             <p class="font-ram text-black-50 py-2">
-                                I am experienced in Amazon Web Services, and I can
-                                help clients with several related technologies. A technical guy with experience in
-                                creating solutions for customers. Dynamic and goal-oriented. Confident and poised in
-                                interactions with individuals at all levels. Focused and dedicated; I have a good eye
-                                for detail and put in my best effort in time management and prioritization.
+                                I design, build and run secure, highly available cloud platforms for mission-critical
+                                financial services. My focus: AWS, Kubernetes, Internal Developer Platforms,
+                                Infrastructure as Code, GitOps and observability. I own the full infrastructure
+                                lifecycle — from architecture and automation to operations, troubleshooting and
+                                cost optimisation.
                             </p>
-                            <div class="d-flex flex-row flex-wrap justify-content-between py-4">
-                                <div class="d-flex flex-column">
-                                    <p class="font-ram"><b>Website: </b><span
-                                            class="text-black-50">aws.com</span></p>
-                                </div>
+                            <p class="font-ram py-2 profile-links">
+                                <a href="https://www.credly.com/badges/b338581c-6682-40b0-b38c-47862117039a" target="_blank" rel="noopener noreferrer">Credly</a> ·
+                                <a href="https://medium.com/@alexanderilves" target="_blank" rel="noopener noreferrer">Medium</a> ·
+                                <a href="https://github.com/ailves2009" target="_blank" rel="noopener noreferrer">GitHub</a> ·
+                                <a href="https://gitlab.com/iag2009" target="_blank" rel="noopener noreferrer">GitLab</a>
+                            </p>
+                            <div class="mb-3">
+                                <a href="/assets/Aleksandr_Ilves_CV_Platform.pdf" target="_blank" rel="noopener"
+                                    class="btn btn-dark text-uppercase mr-3">Download CV</a>
                             </div>
-                            <div class="btn-group mb-3" role="group">
-                                <button type="submit" onclick="window.open('/assets/Aleksandr_Ilves_CV_EuroPass.pdf')" 
-                                    class="btn btn-dark text-uppercase mr-3">Download CV</button>
-                                <button type="submit" onclick="window.open('/assets/Alexander_Ilves_Video_CV.mp4')" 
-                                    class="btn btn-dark text-uppercase mr-3">Open Video CV</button>
-                            </div><br>
-                            <!-- button type="submit" onclick="window.open('/assets/Aleksandr_Ilves_CV_EuroPass.pdf')"
-                                class="btn btn-dark text-uppercase mr-3">Download CV</button>
-                            <button type="submit" onclick="window.open('/assets/Alexander_Ilves_Video_CV.mp4')"
-                                class="btn btn-dark text-uppercase mr-3">Open Video CV</button -->
                         </div>
                     </div>
                 </section>
                 <!-- #about me area -->
 
-                <!-- ability -->
-                <section class="skill px-4 py-5 bg-light" id="services">
+                <!-- experience -->
+                <section class="experience px-4 py-5 bg-light" id="experience">
+                    <div class="py-3">
+                        <h5 class="text-uppercase font-os font-size-16 text-muted">Career</h5>
+                        <h2 class="text-uppercase font-staat font-size-34">Experience</h2>
+                    </div>
+
+                    <article class="job">
+                        <h3 class="font-os font-size-20 mb-1">Senior DevOps &amp; Agentic Platform Engineer — Unlimit</h3>
+                        <p class="job-meta font-ram text-muted mb-2">Apr 2026 – present · Belgrade, Serbia</p>
+                        <p class="font-ram text-black-50">
+                            An Internal Developer Platform for high-throughput payment systems and AI/LLM workloads.
+                            Production EKS with Karpenter; Cilium and ACK; GitOps with ArgoCD and Helm; multi-region
+                            Terraform and GitLab CI; infrastructure for Temenos, SWIFT, SEPA integrations.
+                        </p>
+                    </article>
+
+                    <article class="job">
+                        <h3 class="font-os font-size-20 mb-1">Senior DevOps Engineer / Cloud Architect — ECHOTWIN AI</h3>
+                        <p class="job-meta font-ram text-muted mb-2">Apr 2025 – Apr 2026</p>
+                        <p class="font-ram text-black-50">
+                            AWS for a ML/AI-driven project platform. <b>80+ SOC 2 controls</b>, a multi-account AWS
+                            setup, <b>cloud spend down 25–30%</b>, Karpenter and Istio, monitoring with Prometheus,
+                            Grafana and Datadog.
+                        </p>
+                    </article>
+
+                    <article class="job">
+                        <h3 class="font-os font-size-20 mb-1">Senior DevOps Engineer — Quantori</h3>
+                        <p class="job-meta font-ram text-muted mb-2">Aug 2024 – Apr 2025</p>
+                        <p class="font-ram text-black-50">
+                            Kubernetes on AWS and GCP, Python automation, <b>deployment reliability up ~40%</b>.
+                        </p>
+                    </article>
+
+                    <article class="job">
+                        <h3 class="font-os font-size-20 mb-1">Senior SRE Engineer — Wildberries</h3>
+                        <p class="job-meta font-ram text-muted mb-2">Nov 2023 – Aug 2024</p>
+                        <p class="font-ram text-black-50">
+                            Large-scale private cloud, <b>99.99% availability</b>, incident response, backup and DR.
+                        </p>
+                    </article>
+
+                    <article class="job">
+                        <h3 class="font-os font-size-20 mb-1">Senior DevOps Engineer — DataArt</h3>
+                        <p class="job-meta font-ram text-muted mb-2">Feb 2021 – Nov 2023</p>
+                        <p class="font-ram text-black-50">
+                            AWS and Azure with Kubernetes and Terraform, <b>deployment lead time down 35%</b>,
+                            GitOps with ArgoCD, multi-cloud DR.
+                        </p>
+                    </article>
+
+                    <article class="job">
+                        <h3 class="font-os font-size-20 mb-1">Infrastructure / System Architect</h3>
+                        <p class="job-meta font-ram text-muted mb-2">2014 – 2020</p>
+                        <p class="font-ram text-black-50">
+                            VMware, private cloud, high availability and DR, virtualisation, networking,
+                            ISO 27001 and security programmes.
+                        </p>
+                    </article>
+                </section>
+                <!-- #experience -->
+
+                <!-- skills -->
+                <section class="skill px-4 py-5" id="skills">
                     <div class="ability py-3">
                         <h5 class="text-uppercase font-os font-size-16 text-muted">Ability</h5>
-                        <h1 class="text-uppercase font-staat font-size-34">My skills</h1>
+                        <h2 class="text-uppercase font-staat font-size-34">Skills</h2>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-6 pl-4">
-                            <p class="font-ram font-size-16 text-black-50 pb-3">
-                                I am well versed in <a href="https://www.credly.com/badges/b338581c-6682-40b0-b38c-47862117039a" target="_blank">AWS services and architecture</a>:</br>
-                                I have a huge experience with <a href="https://medium.com/aws-tip/aws-ec2-ssh-not-working-6cfa2c7654fa" target="_blank">EC2</a>, 
-                                    <a href="https://medium.com/aws-tip/terraform-state-in-aws-s3-bucket-76882203f002" target="_blank">S3</a>, RDS, Route53, SQS, SNS, 
-                                    <a href="https://github.com/iag2009/aws-cloud-resume-ailves" target="_blank">CloudFront</a>, CloudFormation, CloudWatch and more on my last projects. </br>
-                                I am good at Azure services and architecture: </br>
-                                - <a href="https://github.com/iag2009/Azure-ACR-PoC/" target="_blank">Azure Container Registry</a>, Data Factory Services, 
-                                <a href="https://github.com/iag2009/Azure-Event-Hub-PoC/" target="_blank">Event Hubs</a>, IAM, 
-                                <a href="https://medium.com/@alexanderilves/streaming-data-with-azure-eventhub-and-azure-stream-analytics-5ae7d55be942/" target="_blank">Stream Analytics</a>, 
-                                DevOps, MySQL/MSSQL servers, Name Resolving
-                                </br>
-                                Moreover, I am proficient with :</br>
-                                - virtualisation and containerisation platforms such as <a href="https://alexanderilves.medium.com/kubernetes-networks-4967512d9900" target="_blank">Kubernetes</a>, Docker and <a href="https://alexanderilves.medium.com/%D0%BF%D1%80%D0%BE%D0%B1%D0%BB%D0%B5%D0%BC%D0%B0-%D0%B7%D0%B0%D0%B2%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5-%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B8-vcenter-%D0%BD%D0%B0-2-%D0%BE%D0%BC-%D1%8D%D1%82%D0%B0%D0%BF%D0%B5-%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B8-61e860231805" target="_blank">VMware;</a></br>
-                                - IaaS practices like <a href="https://medium.com/aws-tip/terraform-state-in-aws-s3-bucket-76882203f002" target="_blank">Terraform</a>, CloudFormation, and Helm tools;</br>
-                                - <a href="https://alexanderilves.medium.com/on-premise-veeam-backup-to-azure-312875fa9218" target="_blank">Disaster recovery and Backups: Veeam</a>
-                                </br>
-                                I have a working knowledge of Linux administration, TCP/IP networking, routing, load balancing, DNS, and security. 
-                                I have been involved in many multi-cloud projects as a network engineer, virtualisation engineer and architect. 
-                                </br>
-                            </p>
-                            <ul class="list-inline dev-icons">
-                                <li class="list-inline-item">
-                                    <i class="fab fa-aws"></i>
-                                </li>
-                                <li class="list-inline-item">
-                                    <i class="fa-brands fa-microsoft"></i>
-                                </li>
-                                <li class="list-inline-item">
-                                    <i class="fa-brands fa-linux"></i>
-                                </li>
-                                <li class="list-inline-item">
-                                    <i class="fa-brands fa-vmware"></i>
-                                </li>
-                            </ul>
-                        </div>
+                    <dl class="skill-groups font-ram">
+                        <dt>Cloud</dt>
+                        <dd><span>AWS</span><span>Azure</span><span>GCP</span></dd>
+                        <dt>Platform</dt>
+                        <dd><span>Kubernetes</span><span>EKS</span><span>Karpenter</span><span>Docker</span><span>Helm</span><span>Cilium</span><span>ACK</span><span>IDP</span></dd>
+                        <dt>IaC</dt>
+                        <dd><span>Terraform</span><span>Terragrunt</span><span>CloudFormation</span><span>Ansible</span></dd>
+                        <dt>GitOps &amp; CI/CD</dt>
+                        <dd><span>ArgoCD</span><span>GitLab CI</span><span>GitHub Actions</span></dd>
+                        <dt>Observability</dt>
+                        <dd><span>Prometheus</span><span>Grafana</span><span>ELK</span><span>Datadog</span><span>CloudWatch</span></dd>
+                        <dt>Security</dt>
+                        <dd><span>SOC 2</span><span>ISO 27001</span><span>DORA</span><span>IAM/RBAC</span><span>Vanta</span></dd>
+                        <dt>FinTech</dt>
+                        <dd><span>Temenos Transact</span><span>SWIFT</span><span>SEPA</span></dd>
+                        <dt>Languages</dt>
+                        <dd><span>Python</span><span>Bash</span></dd>
+                    </dl>
+                    <ul class="list-inline dev-icons mt-4 mb-0">
+                        <li class="list-inline-item"><i class="fa-brands fa-aws" aria-label="AWS"></i></li>
+                        <li class="list-inline-item"><i class="fa-brands fa-microsoft" aria-label="Microsoft Azure"></i></li>
+                        <li class="list-inline-item"><i class="fa-brands fa-google" aria-label="Google Cloud"></i></li>
+                        <li class="list-inline-item"><i class="fa-solid fa-dharmachakra" aria-label="Kubernetes"></i></li>
+                        <li class="list-inline-item"><i class="fa-brands fa-linux" aria-label="Linux"></i></li>
+                    </ul>
                 </section>
-                <!-- #ability -->
+                <!-- #skills -->
 
-
-                <!-- awards -->
-                <section class="awards px-4 py-5" id="awards">
-                    <div class="do py-5">
-                        <h5 class="text-uppercase font-os font-size-16 text-muted">What I have achieved</h5>
-                        <h1 class="text-uppercase font-staat font-size-34"><i class="fas fa-award"></i> Awards &amp;
-                            Certifications</h1>
-                    </div>
-                    <div class="w-100">
-
-                        <ul class="fa-ul mb-0 font-ram font-size-16 text-black-50 pb-3">
-                            <li>
-                                <i class="fa-li fa fa-trophy text-warning"></i>
-                                <a href="https://www.credly.com/badges/b338581c-6682-40b0-b38c-47862117039a" target="_blank">AWS Certified Solutions Architect SAP</a>
-                            </li>
-                            <li>
-                                <i class="fa-li fa fa-trophy text-warning"></i>
-                                Microsoft System Engineer
-                            </li>
-                            <li>
-                                <i class="fa-li fa fa-trophy text-warning"></i>
-                                <a href="https://www.credly.com/badges/895a8af6-9f1c-4810-96ad-f13997c27853/linked_in_profile" target="_blank">VMware Certified Professional</a>
-                            </li>
-                            <li>
-                                <i class="fa-li fa fa-trophy text-warning"></i>
-                                VMware vExpert DCV
-                            </li>
-                        </ul>
-                    </div>
-                </section>
-                <!-- #services -->
-
-                <!-- work -->
+                <!-- projects -->
                 <section class="portfolio py-5 px-4 bg-light" id="portfolio">
                     <div class="py-3">
-                        <h1 class="text-uppercase font-staat font-size-34"><i class="fa-brands fa-github"></i>My last projects</h1>
-                        <ul class="fa-ul mb-0 font-ram font-size-16 text-black-50 pb-3">
-                            <li>
-                                <i class="fa-li fa fa-trophy text-warning"></i>
-                                <a href="https://alexanderilves.medium.com/on-premise-veeam-backup-to-azure-312875fa9218" target="_blank">DR legacy infrastructure to Azure cloud</a>
-                            </li>
-                            <li>
-                                <i class="fa-li fa fa-trophy text-warning"></i>
-                                Banking App for mutual authorization (AWS, Route53, EKS, IAM, RDS, DynamoDB ..)
-                            </li>
-                            <li>
-                                <i class="fa-li fa fa-trophy text-warning"></i>
-                                Analytical site for a healthcare institution on AWS (utilizing CloudFormation, Terraform, Lambda, StepFunction, Jobs, etc.).
-                            </li>
-                            <li>&nbsp;
-                            <li>
-                            <li>
-                                btw: this site is also hosted on AWS, using S3, CloudFront, Route53, and Lambda@Edge. Thats the short story about the <a href="https://github.com/iag2009/aws-cloud-resume-ailves" target="_blank">project</a>:    
-                            </li>
-                        </ul>
+                        <h5 class="text-uppercase font-os font-size-16 text-muted">Portfolio</h5>
+                        <h2 class="text-uppercase font-staat font-size-34">Projects</h2>
                     </div>
-                </section>
-                <!-- #work -->
 
-                <!-- work -->
-                <section class="work py-5 px-4 bg-light" id="Interests">
+                    <h3 class="font-os font-size-20 text-uppercase text-muted mb-3">Selected work</h3>
+                    <div class="row">
+                        <div class="col-lg-6 mb-4">
+                            <div class="project-card">
+                                <h4 class="font-os font-size-20">AI video analytics on AWS</h4>
+                                <p class="font-ram text-black-50 mb-0">
+                                    Real-time object detection over 10M+ records. EKS, ArgoCD, Fargate, SQS with DLQ,
+                                    multi-account Organizations and SSO, GuardDuty, Security Hub, Terraform,
+                                    Terragrunt, Atmos.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 mb-4">
+                            <div class="project-card">
+                                <h4 class="font-os font-size-20">AI platform on GCP</h4>
+                                <p class="font-ram text-black-50 mb-0">
+                                    Cloud Run, Vertex AI, Pub/Sub, Eventarc, Workflows, Terragrunt.
+                                    <b>Infrastructure costs down 25–30%</b> while meeting latency requirements.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 mb-4">
+                            <div class="project-card">
+                                <h4 class="font-os font-size-20">
+                                    <a href="https://github.com/iag2009/aws-cloud-resume-ailves" target="_blank" rel="noopener noreferrer">This site <i class="fa-brands fa-github"></i></a>
+                                </h4>
+                                <p class="font-ram text-black-50 mb-0">
+                                    S3, CloudFront and a Lambda Function URL with DynamoDB, all in Terraform, with OIDC
+                                    deploys from GitHub Actions. A cost audit cut the AWS bill from
+                                    <b>$13.66 to $0.66/month (−95%)</b>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="font-os font-size-20 text-uppercase text-muted mt-2 mb-3">Open source on GitHub</h3>
+                    <div class="row">
+                        <div class="col-lg-6 mb-4">
+                            <div class="project-card">
+                                <h4 class="font-os font-size-20">
+                                    <a href="https://github.com/ailves2009/poc-aws-eks-karpenter" target="_blank" rel="noopener noreferrer">EKS platform with Karpenter <i class="fa-brands fa-github"></i></a>
+                                </h4>
+                                <p class="font-ram text-black-50 mb-0">
+                                    Architecture proposal and Terraform POC for a SaaS scaling from hundreds of users to
+                                    millions: multi-account AWS, EKS with Karpenter (Graviton + Spot, multi-arch),
+                                    Pod Identity and IRSA, RDS → Aurora path, 6-phase roadmap.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 mb-4">
+                            <div class="project-card">
+                                <h4 class="font-os font-size-20">
+                                    <a href="https://github.com/ailves2009/poc-aws-eks-nginx" target="_blank" rel="noopener noreferrer">EKS from an empty account <i class="fa-brands fa-github"></i></a>
+                                </h4>
+                                <p class="font-ram text-black-50 mb-0">
+                                    Terragrunt-built EKS 1.33 across 3 AZs: IRSA, Cluster Autoscaler, HPA,
+                                    AWS Load Balancer Controller, ACM and Route 53 — end-to-end HTTPS.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 mb-4">
+                            <div class="project-card">
+                                <h4 class="font-os font-size-20">
+                                    <a href="https://github.com/ailves2009/poc-fargate" target="_blank" rel="noopener noreferrer">ECS on Fargate <i class="fa-brands fa-github"></i></a>
+                                </h4>
+                                <p class="font-ram text-black-50 mb-0">
+                                    FARGATE + FARGATE_SPOT capacity providers, ALB with blue/green weighted routing,
+                                    Fluent Bit sidecar shipping logs to Kinesis Firehose, Cloud Map service discovery.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 mb-4">
+                            <div class="project-card">
+                                <h4 class="font-os font-size-20">
+                                    <a href="https://github.com/iag2009/Azure-Event-Hub-PoC" target="_blank" rel="noopener noreferrer">Azure Event Hubs PoC <i class="fa-brands fa-github"></i></a>
+                                </h4>
+                                <p class="font-ram text-black-50 mb-0">
+                                    Event streaming environment in Terraform with an Azure Pipelines definition and
+                                    Python producers and consumers.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 mb-4">
+                            <div class="project-card">
+                                <h4 class="font-os font-size-20">
+                                    <a href="https://github.com/iag2009/Azure-ACR-PoC" target="_blank" rel="noopener noreferrer">Azure runtime platform PoC <i class="fa-brands fa-github"></i></a>
+                                </h4>
+                                <p class="font-ram text-black-50 mb-0">
+                                    Container Registry, Key Vault with access policies and Linux VMs in Terraform,
+                                    cloud-init bootstrap and a generated Ansible inventory.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="font-os font-size-20 text-uppercase text-muted mt-2 mb-3">Writing on Medium</h3>
+                    <ul class="fa-ul font-ram text-black-50 mb-0">
+                        <li><i class="fa-li fa-brands fa-medium"></i><a href="https://alexanderilves.medium.com/kubernetes-networks-4967512d9900" target="_blank" rel="noopener noreferrer">Kubernetes networks</a></li>
+                        <li><i class="fa-li fa-brands fa-medium"></i><a href="https://medium.com/aws-tip/terraform-state-in-aws-s3-bucket-76882203f002" target="_blank" rel="noopener noreferrer">Terraform state in an AWS S3 bucket</a></li>
+                        <li><i class="fa-li fa-brands fa-medium"></i><a href="https://medium.com/aws-tip/aws-ec2-ssh-not-working-6cfa2c7654fa" target="_blank" rel="noopener noreferrer">AWS EC2: SSH not working</a></li>
+                        <li><i class="fa-li fa-brands fa-medium"></i><a href="https://medium.com/@alexanderilves/streaming-data-with-azure-eventhub-and-azure-stream-analytics-5ae7d55be942" target="_blank" rel="noopener noreferrer">Streaming data with Azure Event Hub and Stream Analytics</a></li>
+                        <li><i class="fa-li fa-brands fa-medium"></i><a href="https://alexanderilves.medium.com/on-premise-veeam-backup-to-azure-312875fa9218" target="_blank" rel="noopener noreferrer">On-premise Veeam backup to Azure</a></li>
+                    </ul>
+                </section>
+                <!-- #projects -->
+
+                <!-- certifications -->
+                <section class="awards px-4 py-5" id="awards">
+                    <div class="do py-3">
+                        <h5 class="text-uppercase font-os font-size-16 text-muted">What I have achieved</h5>
+                        <h2 class="text-uppercase font-staat font-size-34"><i class="fa-solid fa-award"></i> Certifications</h2>
+                    </div>
+                    <ul class="fa-ul mb-0 font-ram font-size-16 text-black-50 pb-3">
+                        <li><i class="fa-li fa-solid fa-trophy text-warning"></i>
+                            <a href="https://www.credly.com/badges/b338581c-6682-40b0-b38c-47862117039a" target="_blank" rel="noopener noreferrer">AWS Certified Solutions Architect – Professional</a></li>
+                        <li><i class="fa-li fa-solid fa-trophy text-warning"></i>AWS Certified Solutions Architect – Associate</li>
+                        <li><i class="fa-li fa-solid fa-trophy text-warning"></i>Microsoft Certified Systems Engineer (MCSE)</li>
+                        <li><i class="fa-li fa-solid fa-trophy text-warning"></i>
+                            <a href="https://www.credly.com/badges/895a8af6-9f1c-4810-96ad-f13997c27853/linked_in_profile" target="_blank" rel="noopener noreferrer">VMware Certified Professional (VCP)</a></li>
+                        <li><i class="fa-li fa-solid fa-trophy text-warning"></i>VMware vExpert</li>
+                        <li><i class="fa-li fa-solid fa-trophy text-warning"></i>Project Management Professional (PMP)</li>
+                        <li><i class="fa-li fa-solid fa-trophy text-warning"></i>ITIL Expert in IT Service Management</li>
+                    </ul>
+                </section>
+                <!-- #certifications -->
+
+                <!-- education -->
+                <section class="education px-4 py-5 bg-light" id="education">
                     <div class="py-3">
-                        <h5 class="text-uppercase font-staat font-size-34"> &nbsp;My Interests</h5>
-                        <p class="font-ram font-size-16 text-black-50 pb-3">Apart from being a DevOps Engineer, I enjoy most of my time being outdoors playing various sports, traveling around Europe.<br>
-                        When forced indoors, I enjoy wandering around the city, listening to opera, and reading books!</p>
+                        <h5 class="text-uppercase font-os font-size-16 text-muted">Background</h5>
+                        <h2 class="text-uppercase font-staat font-size-34">Education &amp; Languages</h2>
+                    </div>
+                    <div class="row font-ram">
+                        <div class="col-lg-7 mb-3">
+                            <ul class="list-unstyled text-black-50 mb-0">
+                                <li class="mb-2"><b class="text-dark">Master's Degree in Information Technology Science</b><br>
+                                    Saint Petersburg Electrotechnical University "LETI", 2001</li>
+                                <li class="mb-2"><b class="text-dark">Diploma in Economic Science</b><br>
+                                    Saint Petersburg State University, 2015–2017</li>
+                                <li><b class="text-dark">Internship</b><br>
+                                    Management Institute of Finland (MIF), 2015</li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-5">
+                            <ul class="list-unstyled text-black-50 mb-0">
+                                <li class="mb-2"><b class="text-dark">Russian</b> — native</li>
+                                <li class="mb-2"><b class="text-dark">English</b> — professional (IELTS C1)</li>
+                                <li><b class="text-dark">German</b> — B1</li>
+                            </ul>
+                        </div>
                     </div>
                 </section>
-                <!-- #work -->
+                <!-- #education -->
+
+                <!-- interests -->
+                <section class="work py-5 px-4" id="interests">
+                    <div class="py-3">
+                        <h2 class="text-uppercase font-staat font-size-34">Beyond work</h2>
+                        <p class="font-ram font-size-16 text-black-50 pb-3">I spend most of my free time outdoors, playing various sports and travelling around Europe.<br>
+                        When forced indoors, I enjoy wandering around the city, listening to opera and reading books.</p>
+                    </div>
+                </section>
+                <!-- #interests -->
 
                 <!--footer-->
                 <footer id="footer" class="pt-5 px-3">
                     <div id="contact_us">
                         <div class="row bg-light py-5">
                             <div class="col-sm-4 my-5 text-center">
-                                <h6 class="font-ram font-size-16 text-black-50">&copy;2023 AIlves. 1.19 All rights reserved
-                                </h6>
+                                <p class="font-ram font-size-16 text-black-50">&copy; 2026 Aleksandr Ilves<br>Last updated October 2026</p>
                             </div>
                             <div class="col-sm-4 my-4 text-center">
                                 <div class="footer-title">
-                                    <p class="description font-os font-size-16 text-black-50 text-uppercase">Made with ❤
-                                    </p>
+                                    <p class="description font-os font-size-16 text-black-50 text-uppercase">Made with ❤ on AWS</p>
                                 </div>
-                                <div class="counter-number">👀 Views: <span id="counterValue">Loading...</span></div>
+                                <div class="counter-number">👀 Views: <span id="counterValue">…</span></div>
                             </div>
                             <div class="social-icons col-sm-4 my-4 text-center">
-                                <a href="https://www.linkedin.com/in/alexander-ilves-2009/" target="_blank">    
-                                    <i class="fab fa-linkedin-in"></i>
+                                <a href="https://www.linkedin.com/in/alexander-ilves-2009/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                                    <i class="fa-brands fa-linkedin-in"></i>
                                 </a>
-                                <a href="https://github.com/iag2009" target="_blank">
-                                    <i class="fab fa-github"></i>
+                                <a href="https://github.com/ailves2009" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                                    <i class="fa-brands fa-github"></i>
                                 </a>
-                                <a href="https://gitlab.com/iag2009" target="_blank">
+                                <a href="https://gitlab.com/iag2009" target="_blank" rel="noopener noreferrer" aria-label="GitLab">
                                     <i class="fa-brands fa-gitlab"></i>
                                 </a>
-                                <a href="https://medium.com/@alexanderilves" target="_blank">
+                                <a href="https://medium.com/@alexanderilves" target="_blank" rel="noopener noreferrer" aria-label="Medium">
                                     <i class="fa-brands fa-medium"></i>
                                 </a>
-                                <!--a href="https://twitter.com/ailves2009" target="_blank">
-                                    <i class="fab fa-twitter"></i>
-                                </a-->
                             </div>
                         </div>
                     </div>
@@ -257,30 +436,6 @@
             </div>
         </div>
     </main>
-    </div>
-    </div>
-    </div>
-
-    <script src="https://kit.fontawesome.com/ec46dad1d0.js" 
-        crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-        crossorigin="anonymous"></script>
-
-    <!-- script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script-->
-
-    <!-- script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-        crossorigin="anonymous"></script -->
-
-    <!-- script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/js/all.min.js"
-        integrity="sha256-MAgcygDRahs+F/Nk5Vz387whB4kSK9NXlDN3w58LLq0=" 
-        crossorigin="anonymous"></script -->
-    <script src="./vendor/typed/typed.min.js"></script>
-    <script src="https://unpkg.com/swiper@14.2.0/swiper-bundle.min.js"></script>
-    <script src="./index.js"></script>
 
 </body>
 </html>

@@ -1,19 +1,23 @@
 terraform {
   backend "s3" {
-    bucket         = "ailves-2009-terraform-state"
-    key            = "aws-cloud-resume-ailves/dev/aws-cloud-resume-ailves.tfstate"
-    region         = "us-east-2"
-    dynamodb_table = "ailves-tf-state-lock"
-    encrypt        = "false"
+    bucket = "ailves-2009-terraform-state"
+    key    = "aws-cloud-resume-ailves/dev/aws-cloud-resume-ailves.tfstate"
+    region = "us-east-2"
+    # S3-native locking (a .tflock object next to the state) replaces the
+    # deprecated DynamoDB lock table. Needs Terraform >= 1.10.
+    use_lockfile = true
+    # The bucket already has default SSE (AES256); this makes it explicit.
+    # Changing backend settings requires `terraform init -reconfigure`.
+    encrypt = true
   }
 
-  required_version = ">= 0.13.1"
+  required_version = ">= 1.10" # use_lockfile; `removed` blocks need >= 1.7
   required_providers {
     aws = {
       source = "hashicorp/aws"
-      # Было ">= 4.9" при залоченной 5.32.1 (январь 2024) — эта версия не
-      # знает про актуальные рантаймы Lambda. Верхняя граница нужна, чтобы
-      # мажорный релиз провайдера не приехал сам собой.
+      # Was ">= 4.9" with 5.32.1 (January 2024) in the lock file; that version
+      # does not know the current Lambda runtimes. The upper bound keeps a
+      # major provider release from arriving on its own.
       version = "~> 5.100"
     }
     random = {
