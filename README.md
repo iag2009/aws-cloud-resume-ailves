@@ -11,7 +11,7 @@ This is my attempt at a cloud resume challenge project. The project was publishe
 - jq installed (for Makefile)
 ## Subsequence of installation
 - git init -b master
-- git lfs track "*.pdf,*.mp3,*.mp4" //In each Git repository where you want to use Git LFS (large files support)
+- git lfs track "*.pdf,*.mp3,*.mp4" //In each Git repository where you want to use Git LFS (Github large files support)
 - terraform init -backend-config=workspace_key_prefix=aws-cloud-resume-ailves
 
 
