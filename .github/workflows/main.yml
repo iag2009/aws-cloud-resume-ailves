@@ -5,6 +5,7 @@
 # 1.0          2024        Initial Version
 # 2.0          2026-09     OIDC instead of static keys, CloudFront
 #                          invalidation, --delete, updated actions
+# 2.1          2026-10     Cache-Control per file type
 #
 # Made by Aleksandr Ilves Copyleft (c) 2024
 #---------------------------------------------------------------------
@@ -56,12 +57,31 @@ jobs:
         # it, stale copies lingered for years — notably a second CV file
         # ("Aleksandr Ilves_CV_EuroPass.pdf", with a space) that the
         # Download CV button actually pointed at.
+        #
+        # Two passes, because objects used to carry no Cache-Control at all and
+        # browsers then cached index.html heuristically for weeks: after the
+        # October 2026 redesign returning visitors kept seeing the 2024 page.
+        #   * html/css/js/txt/xml keep their names across releases, so browsers
+        #     must revalidate on every load (max-age=0, a cheap 304), while
+        #     CloudFront keeps them for a day (s-maxage) — the invalidation
+        #     below clears it on deploy.
+        #   * images and PDFs may stay in browser caches for a week.
+        # The video CV is on YouTube; the old copy in the bucket is excluded so
+        # --delete leaves it alone.
         run: |
           aws s3 sync website/ "s3://${S3_BUCKET_NAME}/" \
             --delete \
-            --exclude ".DS_Store" \
-            --exclude "*/.DS_Store" \
-            --exclude "assets/Alexander_Ilves_Video_CV.mp4"
+            --exclude ".DS_Store" --exclude "*/.DS_Store" \
+            --exclude "assets/Alexander_Ilves_Video_CV.mp4" \
+            --exclude "*.html" --exclude "*.css" --exclude "*.js" \
+            --exclude "*.txt" --exclude "*.xml" \
+            --cache-control "public, max-age=604800"
+          aws s3 sync website/ "s3://${S3_BUCKET_NAME}/" \
+            --delete \
+            --exclude "*" \
+            --include "*.html" --include "*.css" --include "*.js" \
+            --include "*.txt" --include "*.xml" \
+            --cache-control "public, max-age=0, s-maxage=86400"
 
       - name: Invalidate CloudFront cache
         # The distribution's default_ttl is 3600s and max_ttl is 86400s.
